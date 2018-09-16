@@ -2,8 +2,13 @@
   box-sizing: border-box;
 }
 
+a {
+  color: #333;
+}
+
+
 body {
-  font-family: 'Inconsolata', monospace;  
+  font-family: 'Share Tech Mono', sans-serif;  
   font-size: 14pt;
   background: #f0f0f0;
   
@@ -22,12 +27,13 @@ body.canvas {
   color: #808080;
 }
 
-a {
-  color: #333;
+body.canvas main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-body.canvas main {
-  height: 100vh;
+body.canvas header {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -37,17 +43,25 @@ body.canvas a {
   color: #e0e0e0;
 }
 
-body.canvas #sketch-title {
-  text-align: center;
-  font-size: 1em;
-  padding-top: 2em;
-  padding-bottom: 2em;
+h1 {
+  font-size: 1.4em;
+  margin: 0.67em 0;
+  font-family: 'Bungee', sans-serif;
+  margin-bottom: 5px;
+  color: #333
 }
 
-h1 {
-  font-weight: bold;
-  font-size: 1em;
-  color: #333
+
+body.canvas h1 {
+  margin: 0.67em 0;
+  color: #999;
+}
+
+footer#controls {
+  margin: 0.67em 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 p {
