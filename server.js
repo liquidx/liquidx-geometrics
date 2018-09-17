@@ -22,12 +22,17 @@ app.set('view engine', '.hbs.html');
 
 app.use(express.static('public'));
 app.use(express.static('g'));
+app.use(express.static('c'));
 app.use(express.static('node_modules/p5/lib'));
 app.use(express.static('node_modules/p5/lib/addons'));
 app.use(express.static('node_modules/dat.gui/build'));
 
 app.get("/g/:seq", (request, response) => {
   response.render('run', {seq: request.params.seq});
+});
+
+app.get("/c/:seq", (request, response) => {
+  response.render('practice', {seq: request.params.seq});
 });
 
 

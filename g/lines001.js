@@ -32,13 +32,6 @@ gui.add(props, 'strokeWidth', 1, 32).step(1);
 document.querySelector('#controls').appendChild(gui.domElement);
   
 
-// handlers
-
-function _lerp(start, finish, percent) {
-  return start + (finish - start) * Math.max(Math.min(percent, 1.0), 0.0);
-}
-
-
 // tickers
 
 function _percentage(offset) {
