@@ -5,11 +5,8 @@ var canvas = null;
 
 // Animation
 var t = 0;
-var a = 0;
-var max_t = 1800;
 var targetFrameRate = 30;
 var loopDuration = 3;
-var period = targetFrameRate * loopDuration;
 let props = {}
 
 function _setupProperties() {
