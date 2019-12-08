@@ -38,6 +38,11 @@ module.exports = {
       template: 'src/example.hbs.html',
       chunks: ['geo']
     }),
+    new HtmlWebpackPlugin({
+      filename: 'geo.hbs.html',
+      template: 'src/geo.hbs.html',
+      chunks: ['geo']
+    }),    
     new MiniCssExtractPlugin({
       filename: '[name].css'
     })  

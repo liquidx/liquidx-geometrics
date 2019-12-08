@@ -8,29 +8,31 @@ var max_t = 1800;
 var targetFrameRate = 30;
 var loopDuration = 3;
 var period = targetFrameRate * loopDuration;
+let props = {}
 
 // props
+function _setupProperties() {
 
-var Properties = function() {
-  this.curveSegments = 60;
-  this.degreeAmplitude = 0.2;
-  this.degreeOffset = 2;
-  this.lineAmplitude = 0.51;
-  this.lineCount = 14;
-  this.lineCountExcess = 6;
-  this.strokeWidth = 16;
-};
-var props = new Properties();
-var gui = new dat.GUI({closed: true, autoplace: false});
-gui.add(props, 'curveSegments', 30, 120);
-gui.add(props, 'degreeAmplitude', 0, 1.0);
-gui.add(props, 'degreeOffset', 0, 3.14);
-gui.add(props, 'lineAmplitude', 0, 1.0);
-gui.add(props, 'lineCount', 1, 64).step(1);
-gui.add(props, 'lineCountExcess', 0, 12).step(1);
-gui.add(props, 'strokeWidth', 1, 32).step(1);
-document.querySelector('#controls').appendChild(gui.domElement);
-  
+  var Properties = function() {
+    this.curveSegments = 60;
+    this.degreeAmplitude = 0.2;
+    this.degreeOffset = 2;
+    this.lineAmplitude = 0.51;
+    this.lineCount = 14;
+    this.lineCountExcess = 6;
+    this.strokeWidth = 16;
+  };
+  props = new Properties();
+  var gui = new dat.GUI({closed: true, autoplace: false});
+  gui.add(props, 'curveSegments', 30, 120);
+  gui.add(props, 'degreeAmplitude', 0, 1.0);
+  gui.add(props, 'degreeOffset', 0, 3.14);
+  gui.add(props, 'lineAmplitude', 0, 1.0);
+  gui.add(props, 'lineCount', 1, 64).step(1);
+  gui.add(props, 'lineCountExcess', 0, 12).step(1);
+  gui.add(props, 'strokeWidth', 1, 32).step(1);
+  document.querySelector('#controls').appendChild(gui.domElement);
+}
 
 // handlers
 
@@ -140,4 +142,6 @@ function setup() {
   canvas.parent("container");
   frameRate(targetFrameRate);
   CAPTURER.init(canvas, targetFrameRate, loopDuration); 
+
+  _setupProperties()
 }

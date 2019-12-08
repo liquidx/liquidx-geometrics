@@ -4,8 +4,6 @@ var canvas = null;
 var grid = 16;
 var radius = 12;
 
-var r_max = CANVAS.width / grid + 1;
-var c_max = CANVAS.height / grid + 1;
 
 // Animation
 var t = 0;
@@ -36,7 +34,11 @@ function color_fn(r, c, t) {
 function draw() {
   background(COLORS.black);
   noStroke();
+  
+  var r_max = CANVAS.width / grid + 1;
+  var c_max = CANVAS.height / grid + 1;
     
+
   for (var r = 0; r < r_max; r++) {
     for (var c = 0; c < c_max; c++) {
       var o = offset_fn(r, c, t);      
