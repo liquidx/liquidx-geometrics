@@ -2,6 +2,7 @@
   "name": "liquidx-geometrics",
   "version": "1.0.0",
   "main": "server.js",
+  "engines": { "node": "10.x" },
   "scripts": {
     "build": "npx webpack",
     "watch": "npx webpack --watch",
