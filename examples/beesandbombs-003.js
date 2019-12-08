@@ -12,7 +12,7 @@ var max_t = 1800;
 var targetFrameRate = 30;
 var loopDuration = 3;
 var period = targetFrameRate * loopDuration;
-
+let props = {}
 
 // setup, start and end frame functions
 
@@ -21,7 +21,9 @@ function setup() {
   canvas.parent("container");
   frameRate(targetFrameRate);
   CAPTURER.init(canvas, targetFrameRate, loopDuration); 
-  
+
+  _setupProperties()
+
   //pixelDensity(2);
   smooth(8);
   rectMode(CENTER);
@@ -31,13 +33,51 @@ function setup() {
 function startFrame() {
   clear();
   background(32);  
-  strokeWeight(props.stroke);
+  strokeWeight(1);
   strokeCap(SQUARE);
 }
 
 function endFrame() {
   CAPTURER.captureFrame();
   t = t + 1;  // increment frame.
+}
+
+function _setupProperties() {
+  var Properties = function() {
+    this.numberOfFrames = 120;
+    this.shutterAngle = 0.7;
+  
+    this.N = 18;
+    this.pad = 20;
+    this.maxDist = 148;
+    this.minDiameter = 4;
+    this.maxDiameter = 7;
+    this.maxOffset = 10;
+    this.wavelength = 44;
+    this.mn = 0.5 * Math.sqrt(3);
+    this.amp = 1;
+  };
+  props = new Properties();
+  var gui = new dat.GUI({closed: true, autoplace: false});
+  
+  gui.add(props, 'numberOfFrames', 1, 180).step(1);
+  gui.add(props, 'shutterAngle', 0.1, 1.0).step(0.1);
+  
+  gui.add(props, 'N', 0, 50).step(1);
+  gui.add(props, 'pad', 1, 50).step(1);
+  gui.add(props, 'maxDist', 1, 500).step(1);
+  gui.add(props, 'minDiameter', 1, 8).step(1);
+  gui.add(props, 'maxDiameter', 1, 16).step(1);
+  gui.add(props, 'maxOffset', 0, 50).step(1);
+  gui.add(props, 'wavelength', 1, 50).step(1);
+  gui.add(props, 'mn', 0, 3);
+  gui.add(props, 'amp', 0, 1);
+  
+  
+  
+  document.querySelector('#controls').appendChild(gui.domElement);
+    
+  
 }
 
 // visual effects
@@ -130,45 +170,6 @@ function _up_down(offset) {
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-// props
-
-var Properties = function() {
-  this.numberOfFrames = 120;
-  this.shutterAngle = 0.7;
-
-  this.N = 18;
-  this.pad = 20;
-  this.maxDist = 148;
-  this.minDiameter = 4;
-  this.maxDiameter = 7;
-  this.maxOffset = 10;
-  this.wavelength = 44;
-  this.mn = 0.5 * Math.sqrt(3);
-  this.amp = 1;
-};
-var props = new Properties();
-var gui = new dat.GUI({closed: true, autoplace: false});
-
-gui.add(props, 'numberOfFrames', 1, 180).step(1);
-gui.add(props, 'shutterAngle', 0.1, 1.0).step(0.1);
-
-gui.add(props, 'N', 0, 50).step(1);
-gui.add(props, 'pad', 1, 50).step(1);
-gui.add(props, 'maxDist', 1, 500).step(1);
-gui.add(props, 'minDiameter', 1, 8).step(1);
-gui.add(props, 'maxDiameter', 1, 16).step(1);
-gui.add(props, 'maxOffset', 0, 50).step(1);
-gui.add(props, 'wavelength', 1, 50).step(1);
-gui.add(props, 'mn', 0, 3);
-gui.add(props, 'amp', 0, 1);
-
-
-
-document.querySelector('#controls').appendChild(gui.domElement);
-  
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
 // DRAW
 
 function constrain0to1(v) { return constrain(v, 0, 1); }
@@ -186,8 +187,7 @@ function dots() {
       }
       
       var dist = max(abs(y), 
-                     abs(0.5 * y + props.mn * x), 
-                     abs(0.5 * y - props.mn * x));
+                  max(abs(0.5 * y + props.mn * x), abs(0.5 * y - props.mn * x)))
       
       if (dist < props.maxDist) {
         var amp = constrain0to1(map(dist, 0, props.maxDist - props.pad, 1, 0));

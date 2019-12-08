@@ -12,7 +12,7 @@ var max_t = 1800;
 var targetFrameRate = 30;
 var loopDuration = 3;
 var period = targetFrameRate * loopDuration;
-
+let props = {}
 
 // setup, start and end frame functions
 
@@ -21,11 +21,14 @@ function setup() {
   canvas.parent("container");
   frameRate(targetFrameRate);
   CAPTURER.init(canvas, targetFrameRate, loopDuration); 
-  
+
+  _setupProperties()
+
   //pixelDensity(2);
   smooth(8);
   rectMode(CENTER);
   stroke(250);
+
 }
 
 function startFrame() {
@@ -38,6 +41,37 @@ function startFrame() {
 function endFrame() {
   CAPTURER.captureFrame();
   t = t + 1;  // increment frame.
+}
+
+function _setupProperties() {
+  var Properties = function() {
+    this.numberOfFrames = 120;
+    this.shutterAngle = 0.7;
+
+    this.size = 300;
+    this.vcount = 24;
+    this.pad = 20;
+    this.amp = 24;
+    this.hcount = 12;
+    this.stroke = 2;
+  };
+
+  props = new Properties();
+  var gui = new dat.GUI({closed: true, autoplace: false});
+
+  gui.add(props, 'numberOfFrames', 1, 180).step(1);
+  gui.add(props, 'shutterAngle', 0.1, 1.0).step(0.1);
+
+  gui.add(props, 'size', 0, 720).step(10);
+  gui.add(props, 'vcount', 1, 48).step(1);
+  gui.add(props, 'amp', 1, 100).step(1);
+  gui.add(props, 'pad', 1, 50).step(1);
+  gui.add(props, 'stroke', 1, 5).step(1);
+  gui.add(props, 'hcount', 1, 50).step(1);
+
+  document.querySelector('#controls').appendChild(gui.domElement);
+    
+
 }
 
 // visual effects
@@ -127,37 +161,6 @@ function _up_down(offset) {
     return (1 - p) * 2;
   }
 }
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
-// props
-
-var Properties = function() {
-  this.numberOfFrames = 120;
-  this.shutterAngle = 0.7;
-
-  this.size = 300;
-  this.vcount = 24;
-  this.pad = 20;
-  this.amp = 24;
-  this.hcount = 12;
-  this.stroke = 2;
-};
-var props = new Properties();
-var gui = new dat.GUI({closed: true, autoplace: false});
-
-gui.add(props, 'numberOfFrames', 1, 180).step(1);
-gui.add(props, 'shutterAngle', 0.1, 1.0).step(0.1);
-
-gui.add(props, 'size', 0, 720).step(10);
-gui.add(props, 'vcount', 1, 48).step(1);
-gui.add(props, 'amp', 1, 100).step(1);
-gui.add(props, 'pad', 1, 50).step(1);
-gui.add(props, 'stroke', 1, 5).step(1);
-gui.add(props, 'hcount', 1, 50).step(1);
-
-document.querySelector('#controls').appendChild(gui.domElement);
-  
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

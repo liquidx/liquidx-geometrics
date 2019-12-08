@@ -1,14 +1,28 @@
-var express = require('express');
-var app = express();
-app.use(express.static('public'));
+const express = require('express')
+const app = express()
+app.use(express.static('public'))
 
 let port = process.env.PORT || 5001
 
+const exphbs = require('express-handlebars')
+const hbs = exphbs.create({
+  extname: '.hbs.html'
+});
+app.engine('.hbs.html', hbs.engine)
+app.set('views', __dirname + '/public')
+app.set('view engine', 'hbs.html')
+
 app.use(express.static('public'));
-app.use(express.static('g'));
-app.use(express.static('node_modules/p5/lib'));
-app.use(express.static('node_modules/p5/lib/addons'));
-app.use(express.static('node_modules/dat.gui/build'));
+app.use('/geo', express.static('geometrics'));
+app.use('/examples', express.static('examples'));
+
+app.get("/geo/:name", (request, response) => {
+  response.render('geo', {name: request.params.name});
+});
+
+app.get("/example/:name", (request, response) => {
+  response.render('example', {name: request.params.name});
+});
 
 
 var listener = app.listen(port, function () {

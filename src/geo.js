@@ -1,4 +1,14 @@
-let COLORS = {
+import p5 from 'p5'
+import dat from 'dat.gui'
+
+window.dat = dat
+
+// By doing this, it will put all p5 vars in to global.
+new p5()
+
+
+
+window.COLORS = {
   black: '#000000',
   darkgrey: '#333333',
   white: '#d0d0d0',
@@ -8,7 +18,7 @@ let COLORS = {
   orange_verylight: '#FF8A65',
 };
 
-let PASTELS = {
+window.PASTELS = {
   red: '#FF6865',
   orange: '#FFA985',
   yellow: '#FFF491',
@@ -16,20 +26,20 @@ let PASTELS = {
   blue: '#92D1C7'
 };
 
-let ORANGE = {
+window.ORANGE = {
   primary: '#FF6600',
   secondary: '#C13B00',
   black: '#1B1D1E',
   grey: '#424E4F'
 };
 
-let CANVAS = {
+window.CANVAS = {
   width: 480,
   height: 480
 };
 
 // p5.js - capture helper methods.
-let CAPTURER = {
+window.CAPTURER = {
   // This is for reference on how to make frames in to a movie.
   ffmpeg_cmd: "ffmpeg -r 30 -f image2 -pattern_type glob -i canvas\\*.png -s 480x480 -vcodec libx264 -crf 5 -framerate 30 -vb 20M -pix_fmt yuv420p -tune stillimage animation.mp4",
   

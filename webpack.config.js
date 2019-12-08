@@ -7,7 +7,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = {
   mode: 'development',  
   entry: { 
-    index: ['./src/index.js', './src/index.scss']
+    index: ['./src/index.js', './src/index.scss'],
+    geo: ['./src/geo.js', './src/geo.scss']
   },
   output: {
     path: path.resolve(__dirname, 'public'),
@@ -26,6 +27,16 @@ module.exports = {
       filename: 'index.html',
       template: 'src/index.html',
       chunks: ['index']
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'layouts/main.hbs.html',
+      template: 'src/layouts/main.hbs.html',
+      chunks: []
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'example.hbs.html',
+      template: 'src/example.hbs.html',
+      chunks: ['geo']
     }),
     new MiniCssExtractPlugin({
       filename: '[name].css'

@@ -5,7 +5,7 @@
   "scripts": {
     "build": "npx webpack",
     "watch": "npx webpack --watch",
-    "start": "node server.js",
+    "start": "npx webpack && node server.js",
     "start-webpack": "webpack-dev-server --open",
     "deploy-gcloud": "gcloud app deploy --promote -q --project liquidx-geometrics",
     "deploy-firebase": "firebase deploy",
@@ -16,11 +16,14 @@
   "dependencies": {
     "@babel/core": "^7.6.0",
     "@google-cloud/storage": "^3.2.1",
-    "firebase": "^6.6.0",
+    "dat.gui": "^0.7.6",
     "express": "^4.17.1",
+    "express-handlebars": "^3.1.0",
+    "firebase": "^6.6.0",
+    "handlebars": "^4.5.3",
     "lodash": "^4.17.11",
-    "p5": "*",
-    "dat.gui": "^0.7.2"    
+    "normalize.css": "^8.0.1",
+    "p5": "^0.10.2"
   },
   "devDependencies": {
     "eslint": "^5.15.3",
