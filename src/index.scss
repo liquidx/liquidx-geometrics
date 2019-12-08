@@ -1,0 +1,15 @@
+body {
+  background: #eee;
+  margin: 20% 20%;
+  font-family: sans-serif;
+}
+h1#title {
+  font-family: 'Bungee', sans-serif;
+  margin-bottom: 5px;
+}
+.talks, .projects, .content {
+  display: none;
+}
+.fold {
+  height: 100vh;
+}

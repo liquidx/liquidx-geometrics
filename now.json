@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "name": "liquidx-new-web-project",
+  "builds": [
+    { "src": "data/**/*", "use": "@now/static" },
+    { "src": "public/*", "use": "@now/static" }
+  ],
+  "routes": [
+    { "src": "/", "dest": "public/index.html" },
+    { "src": "/index.js", "dest": "public/index.js" },
+    { "src": "/index.css", "dest": "public/index.css" },
+    { "src": "/data/(.*)", "dest": "data/$1" }
+  ]
+}
