@@ -1,5 +1,5 @@
 {
-  "name": "liquidx-new-web-project",
+  "name": "liquidx-geometrics",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
@@ -7,11 +7,11 @@
     "watch": "npx webpack --watch",
     "start": "node server.js",
     "start-webpack": "webpack-dev-server --open",
-    "deploy-gcloud": "gcloud app deploy --promote -q --project liquidx-new-web-project",
+    "deploy-gcloud": "gcloud app deploy --promote -q --project liquidx-geometrics",
     "deploy-firebase": "firebase deploy",
     "deploy-now": "now",
-    "logs-gcloud": "gcloud app logs tail -s default --project liquidx-new-web-project",
-    "deploy-gcs": "gsutil -m cp -r data-images gs://liquidx-new-web-project.a.appspot.com/"
+    "logs-gcloud": "gcloud app logs tail -s default --project liquidx-geometrics",
+    "deploy-gcs": "gsutil -m cp -r data-images gs://liquidx-geometrics.a.appspot.com/"
   },
   "dependencies": {
     "@babel/core": "^7.6.0",

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "liquidx-new-web-project",
+  "name": "liquidx-geometrics",
   "builds": [
     { "src": "data/**/*", "use": "@now/static" },
     { "src": "public/*", "use": "@now/static" }
