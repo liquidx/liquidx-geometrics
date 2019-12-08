@@ -16,6 +16,35 @@ var loopDuration = 3;
 var period = targetFrameRate * loopDuration;
 let props = {}
 
+function _setupProperties() {
+  var Properties = function() {
+    this.sw = 0.2;
+    this.N = 8;
+    this.radius = 200;
+    this.n = 120;
+    this.m = 120;
+    this.wh = 16;
+    this.samplesPerFrame = 1;
+    this.numberOfFrames = 120;
+    this.shutterAngle = 0.6;
+  };
+  
+  props = new Properties();
+
+  var gui = new dat.GUI({closed: true, autoplace: false});
+  gui.add(props, 'sw', 0, 1.0).step(0.1);
+  gui.add(props, 'N', 1, 16).step(1);
+  gui.add(props, 'radius', 100, 500).step(1);
+  gui.add(props, 'n', 0, 360).step(1);
+  gui.add(props, 'm', 100, 500).step(1);
+  gui.add(props, 'wh', 2, 16).step(1);
+  gui.add(props, 'samplesPerFrame', 1, 4).step(1);
+  gui.add(props, 'numberOfFrames', 1, 180).step(1);
+  gui.add(props, 'shutterAngle', 0.1, 1.0).step(0.1);
+
+  document.querySelector('#controls').appendChild(gui.domElement);
+}
+
 // setup, start and end frame functions
 
 function setup() {
@@ -45,72 +74,6 @@ function endFrame() {
   CAPTURER.captureFrame();
   t = t + 1;  // increment frame.
 }
-
-// gui
-
-function _setupProperties() {
-  var Properties = function() {
-    this.sw = 0.2;
-    this.N = 8;
-    this.radius = 200;
-    this.n = 120;
-    this.m = 120;
-    this.wh = 16;
-    this.samplesPerFrame = 1;
-    this.numberOfFrames = 120;
-    this.shutterAngle = 0.6;
-  };
-  
-  props = new Properties();
-
-  var gui = new dat.GUI({closed: true, autoplace: false});
-  gui.add(props, 'sw', 0, 1.0).step(0.1);
-  gui.add(props, 'N', 1, 16).step(1);
-  gui.add(props, 'radius', 100, 500).step(1);
-  gui.add(props, 'n', 100, 500).step(1);
-  gui.add(props, 'm', 100, 500).step(1);
-  gui.add(props, 'wh', 2, 16).step(1);
-  gui.add(props, 'samplesPerFrame', 1, 4).step(1);
-  gui.add(props, 'numberOfFrames', 1, 180).step(1);
-  gui.add(props, 'shutterAngle', 0.1, 1.0).step(0.1);
-
-  document.querySelector('#controls').appendChild(gui.domElement);
-}
-
-
-// handlers
-
-function _lerp(start, finish, percent) {
-  return start + (finish - start) * Math.max(Math.min(percent, 1.0), 0.0);
-}
-
-
-// tickers
-
-function _percentage(offset) {
-  if (typeof offset == 'undefined') {
-    offset = 0;
-  }
-  return ((t + offset) % period) / period;
-}
-
-function _deg(offset) {
-  return _percentage(offset) * TWO_PI;
-}
-
-function _up_down(offset) {
-  var p = _percentage(offset);
-  if (p < 0.5) {
-    return p * 2;
-  } else {
-    return (1 - p) * 2;
-  }
-}
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
-// props
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // DRAW

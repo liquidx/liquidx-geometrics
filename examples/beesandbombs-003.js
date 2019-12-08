@@ -14,33 +14,6 @@ var loopDuration = 3;
 var period = targetFrameRate * loopDuration;
 let props = {}
 
-// setup, start and end frame functions
-
-function setup() {
-  canvas = createCanvas(CANVAS.width, CANVAS.height);
-  canvas.parent("container");
-  frameRate(targetFrameRate);
-  CAPTURER.init(canvas, targetFrameRate, loopDuration); 
-
-  _setupProperties()
-
-  //pixelDensity(2);
-  smooth(8);
-  rectMode(CENTER);
-  stroke(250);
-}
-
-function startFrame() {
-  clear();
-  background(32);  
-  strokeWeight(1);
-  strokeCap(SQUARE);
-}
-
-function endFrame() {
-  CAPTURER.captureFrame();
-  t = t + 1;  // increment frame.
-}
 
 function _setupProperties() {
   var Properties = function() {
@@ -73,11 +46,35 @@ function _setupProperties() {
   gui.add(props, 'mn', 0, 3);
   gui.add(props, 'amp', 0, 1);
   
-  
-  
   document.querySelector('#controls').appendChild(gui.domElement);
-    
-  
+}
+
+// setup, start and end frame functions
+
+function setup() {
+  canvas = createCanvas(CANVAS.width, CANVAS.height);
+  canvas.parent("container");
+  frameRate(targetFrameRate);
+  CAPTURER.init(canvas, targetFrameRate, loopDuration); 
+
+  _setupProperties()
+
+  //pixelDensity(2);
+  smooth(8);
+  rectMode(CENTER);
+  stroke(250);
+}
+
+function startFrame() {
+  clear();
+  background(32);  
+  strokeWeight(1);
+  strokeCap(SQUARE);
+}
+
+function endFrame() {
+  CAPTURER.captureFrame();
+  t = t + 1;  // increment frame.
 }
 
 // visual effects

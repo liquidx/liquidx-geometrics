@@ -14,6 +14,36 @@ var loopDuration = 3;
 var period = targetFrameRate * loopDuration;
 let props = {}
 
+
+function _setupProperties() {
+  var Properties = function() {
+    this.numberOfFrames = 120;
+    this.shutterAngle = 0.7;
+
+    this.size = 300;
+    this.vcount = 24;
+    this.pad = 20;
+    this.amp = 24;
+    this.hcount = 12;
+    this.stroke = 2;
+  };
+
+  props = new Properties();
+  var gui = new dat.GUI({closed: true, autoplace: false});
+
+  gui.add(props, 'numberOfFrames', 1, 180).step(1);
+  gui.add(props, 'shutterAngle', 0.1, 1.0).step(0.1);
+
+  gui.add(props, 'size', 0, 720).step(10);
+  gui.add(props, 'vcount', 1, 48).step(1);
+  gui.add(props, 'amp', 1, 100).step(1);
+  gui.add(props, 'pad', 1, 50).step(1);
+  gui.add(props, 'stroke', 1, 5).step(1);
+  gui.add(props, 'hcount', 1, 50).step(1);
+
+  document.querySelector('#controls').appendChild(gui.domElement);
+}
+
 // setup, start and end frame functions
 
 function setup() {
@@ -43,36 +73,6 @@ function endFrame() {
   t = t + 1;  // increment frame.
 }
 
-function _setupProperties() {
-  var Properties = function() {
-    this.numberOfFrames = 120;
-    this.shutterAngle = 0.7;
-
-    this.size = 300;
-    this.vcount = 24;
-    this.pad = 20;
-    this.amp = 24;
-    this.hcount = 12;
-    this.stroke = 2;
-  };
-
-  props = new Properties();
-  var gui = new dat.GUI({closed: true, autoplace: false});
-
-  gui.add(props, 'numberOfFrames', 1, 180).step(1);
-  gui.add(props, 'shutterAngle', 0.1, 1.0).step(0.1);
-
-  gui.add(props, 'size', 0, 720).step(10);
-  gui.add(props, 'vcount', 1, 48).step(1);
-  gui.add(props, 'amp', 1, 100).step(1);
-  gui.add(props, 'pad', 1, 50).step(1);
-  gui.add(props, 'stroke', 1, 5).step(1);
-  gui.add(props, 'hcount', 1, 50).step(1);
-
-  document.querySelector('#controls').appendChild(gui.domElement);
-    
-
-}
 
 // visual effects
 
@@ -139,29 +139,6 @@ function rgb_fringe2(drawFn, width, height) {
   blend(f2, sx, sy, w, h, dx, dy, w, h, ADD);
   blend(f3, sx, sy, w, h, dx, dy, w, h, ADD);
 }
-
-// tickers
-
-function _percentage(offset) {
-  if (typeof offset == 'undefined') {
-    offset = 0;
-  }
-  return ((t + offset) % period) / period;
-}
-
-function _deg(offset) {
-  return _percentage(offset) * TWO_PI;
-}
-
-function _up_down(offset) {
-  var p = _percentage(offset);
-  if (p < 0.5) {
-    return p * 2;
-  } else {
-    return (1 - p) * 2;
-  }
-}
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // DRAW
