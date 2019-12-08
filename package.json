@@ -2,7 +2,9 @@
   "name": "liquidx-geometrics",
   "version": "1.0.0",
   "main": "server.js",
-  "engines": { "node": "10.x" },
+  "engines": {
+    "node": "11.x"
+  },
   "scripts": {
     "build": "npx webpack",
     "watch": "npx webpack --watch",
@@ -38,7 +40,7 @@
     "postcss-loader": "^3.0.0",
     "sass-loader": "^8.0.0",
     "style-loader": "^0.23.1",
-    "webpack": "^4.39.3",
+    "webpack": "^4.41.2",
     "webpack-cli": "^3.3.8",
     "webpack-dev-middleware": "^3.7.1"
   }
