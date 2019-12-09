@@ -1,28 +1,29 @@
 /* eslint-disable no-undef */
 
 // The canvas.
-var canvas = null;
+let p5canvas = null
+let canvas = null
 
 // Animation
 var t = 0;
-var targetFrameRate = 30;
-var loopDuration = 3;
 let props = {}
 
 function _setupProperties() {
   var Properties = function() {
     this.count = 10;
-    this.widthScale = 0.9
+    this.widthScale = 0.8
 
     this.mutateWidth = 1
     this.shiftX = 0
     this.shiftY = 0
+    this.inset = 8
     this.corner = 4
     this.foreground = '#a9a9a9'
     this.background = '#202020'
 
-    this.samplesPerFrame = 1;
-    this.numberOfFrames = 120;
+    this.samplesPerFrame = 1
+    this.numberOfFrames = 120
+    this.frameRate = 30
   };
   
   props = new Properties();
@@ -31,12 +32,13 @@ function _setupProperties() {
   gui.closed = false;
 
   gui.add(props, 'count', 1, 16).step(1);
-  gui.add(props, 'widthScale', 0.5, 1.5).step(0.1);
+  gui.add(props, 'widthScale', 0.5, 1.5).step(0.05);
 
   gui.add(props, 'mutateWidth', -10, 10).step(0.5);
   gui.add(props, 'shiftX', -10, 10).step(1);
   gui.add(props, 'shiftY', -10, 10).step(1);
 
+  gui.add(props, 'inset',  0, 10).step(1);
   gui.add(props, 'corner', 0, 10).step(0.5);
   gui.addColor(props, 'foreground')
   gui.addColor(props, 'background')
@@ -44,6 +46,7 @@ function _setupProperties() {
   let sampling = gui.addFolder('Recording')
   sampling.add(props, 'samplesPerFrame', 1, 4).step(1);
   sampling.add(props, 'numberOfFrames', 1, 180).step(1);
+  sampling.add(props, 'frameRate', 1, 60).step(1);
 
   document.querySelector('#controls').appendChild(gui.domElement);
 }
@@ -51,12 +54,12 @@ function _setupProperties() {
 // setup, start and end frame functions
 
 function setup() {
-  canvas = createCanvas(CANVAS.width, CANVAS.height);
-  canvas.parent("container");
-  frameRate(targetFrameRate);
-  CAPTURER.init(canvas, targetFrameRate, loopDuration); 
-
   _setupProperties()
+
+  p5canvas = createCanvas(CANVAS.width, CANVAS.height);
+  p5canvas.parent("container");
+  canvas = document.querySelector('#' + p5canvas.id())
+  frameRate(props.frameRate);
   
   pixelDensity(2);
   smooth(8);
@@ -64,6 +67,9 @@ function setup() {
   rectMode(CENTER);
   blendMode(ADD);
   noStroke();
+
+  CAPTURER.init(canvas, canvas.width, canvas.height, props.frameRate, props.numberOfFrames / props.frameRate); 
+
 }
 
 function startFrame() {
@@ -72,8 +78,7 @@ function startFrame() {
 }
 
 function endFrame() {
-  CAPTURER.captureFrame();
-  t = t + 1;  // increment frame.
+  CAPTURER.captureFrame(canvas);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -90,17 +95,18 @@ function drawOne(x, y, gridWidth, squareWidth, corner) {
 }
 
 function draw() {  
+  CAPTURER.start()
   startFrame()
   t = map(frameCount - 1, 0, props.numberOfFrames, 0, 1)
 
   let mutateWidth = props.mutateWidth + sin(TWO_PI * t) * 0.5
-  let oneWidth = CANVAS.width / props.count
-  let oneHeight = CANVAS.height / props.count
+  let oneWidth = (CANVAS.width - 2 * props.inset) / props.count
+  let oneHeight = (CANVAS.height - 2 * props.inset) / props.count
   for (let x = 0; x < props.count; x++) {
     for (let y = 0; y < props.count; y++) {
       drawOne(
-        x * oneWidth + (x * props.shiftX), 
-        y * oneHeight + (y * props.shiftY), 
+        props.inset + x * oneWidth + (x * props.shiftX), 
+        props.inset + y * oneHeight + (y * props.shiftY), 
         oneWidth,  
         (oneWidth - (x * mutateWidth)) * props.widthScale, 
         props.corner)
