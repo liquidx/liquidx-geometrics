@@ -26,17 +26,20 @@ function _setupProperties() {
   
   props = new Properties();
 
-  var gui = new dat.GUI({closed: true, autoPlace: false, width: 320});
+  let gui = new dat.GUI({closed: true, autoPlace: false, width: 360})
+  gui.closed = false;
+
   gui.add(props, 'count', 1, 16).step(1);
   gui.add(props, 'widthScale', 0.5, 1.5).step(0.1);
   gui.add(props, 'heightScale', 0.5, 1.5).step(0.1);
   gui.add(props, 'mutateX', -10, 10).step(0.5);
   gui.add(props, 'mutateY', -10, 10).step(0.5);
+
   let sampling = gui.addFolder('Recording')
   sampling.add(props, 'samplesPerFrame', 1, 4).step(1);
   sampling.add(props, 'numberOfFrames', 1, 180).step(1);
   sampling.add(props, 'shutterAngle', 0.1, 1.0).step(0.1);
-  gui.closed = false;
+
   document.querySelector('#controls').appendChild(gui.domElement);
 }
 

@@ -34,8 +34,8 @@ window.ORANGE = {
 };
 
 window.CANVAS = {
-  width: 480,
-  height: 480
+  width: 360,
+  height: 360
 };
 
 // p5.js - capture helper methods.

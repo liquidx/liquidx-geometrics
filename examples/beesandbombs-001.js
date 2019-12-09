@@ -19,28 +19,31 @@ let props = {}
 function _setupProperties() {
   var Properties = function() {
     this.sw = 0.2;
-    this.N = 8;
-    this.radius = 200;
+    this.N = 6;
+    this.radius = 120;
     this.n = 120;
     this.m = 120;
     this.wh = 16;
+    
     this.samplesPerFrame = 1;
     this.numberOfFrames = 120;
     this.shutterAngle = 0.6;
   };
   
   props = new Properties();
+  var gui = new dat.GUI({autoPlace: false, width: 360})
+  gui.closed = false;
 
-  var gui = new dat.GUI({closed: true, autoplace: false});
   gui.add(props, 'sw', 0, 1.0).step(0.1);
   gui.add(props, 'N', 1, 16).step(1);
   gui.add(props, 'radius', 100, 500).step(1);
   gui.add(props, 'n', 0, 360).step(1);
   gui.add(props, 'm', 100, 500).step(1);
   gui.add(props, 'wh', 2, 16).step(1);
-  gui.add(props, 'samplesPerFrame', 1, 4).step(1);
-  gui.add(props, 'numberOfFrames', 1, 180).step(1);
-  gui.add(props, 'shutterAngle', 0.1, 1.0).step(0.1);
+  let sampling = gui.addFolder('Recording')
+  sampling.add(props, 'samplesPerFrame', 1, 4).step(1);
+  sampling.add(props, 'numberOfFrames', 1, 180).step(1);
+  sampling.add(props, 'shutterAngle', 0.1, 1.0).step(0.1);
 
   document.querySelector('#controls').appendChild(gui.domElement);
 }

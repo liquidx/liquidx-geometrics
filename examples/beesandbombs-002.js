@@ -20,19 +20,17 @@ function _setupProperties() {
     this.numberOfFrames = 120;
     this.shutterAngle = 0.7;
 
-    this.size = 300;
+    this.size = 200;
     this.vcount = 24;
     this.pad = 20;
     this.amp = 24;
-    this.hcount = 12;
+    this.hcount = 9;
     this.stroke = 2;
   };
 
   props = new Properties();
-  var gui = new dat.GUI({closed: true, autoplace: false});
-
-  gui.add(props, 'numberOfFrames', 1, 180).step(1);
-  gui.add(props, 'shutterAngle', 0.1, 1.0).step(0.1);
+  var gui = new dat.GUI({autoPlace: false, width: 360});
+  gui.closed = false;
 
   gui.add(props, 'size', 0, 720).step(10);
   gui.add(props, 'vcount', 1, 48).step(1);
@@ -40,6 +38,10 @@ function _setupProperties() {
   gui.add(props, 'pad', 1, 50).step(1);
   gui.add(props, 'stroke', 1, 5).step(1);
   gui.add(props, 'hcount', 1, 50).step(1);
+
+  let sampling = gui.addFolder('Recording')
+  sampling.add(props, 'numberOfFrames', 1, 180).step(1);
+  sampling.add(props, 'shutterAngle', 0.1, 1.0).step(0.1);
 
   document.querySelector('#controls').appendChild(gui.domElement);
 }

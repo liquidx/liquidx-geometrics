@@ -14,7 +14,6 @@ var loopDuration = 3;
 var period = targetFrameRate * loopDuration;
 let props = {}
 
-
 function _setupProperties() {
   var Properties = function() {
     this.numberOfFrames = 120;
@@ -22,7 +21,7 @@ function _setupProperties() {
   
     this.N = 18;
     this.pad = 20;
-    this.maxDist = 148;
+    this.maxDist = 120;
     this.minDiameter = 4;
     this.maxDiameter = 7;
     this.maxOffset = 10;
@@ -31,11 +30,9 @@ function _setupProperties() {
     this.amp = 1;
   };
   props = new Properties();
-  var gui = new dat.GUI({closed: true, autoplace: false});
-  
-  gui.add(props, 'numberOfFrames', 1, 180).step(1);
-  gui.add(props, 'shutterAngle', 0.1, 1.0).step(0.1);
-  
+  let gui = new dat.GUI({autoPlace: false, width: 360})
+  gui.closed = false;
+   
   gui.add(props, 'N', 0, 50).step(1);
   gui.add(props, 'pad', 1, 50).step(1);
   gui.add(props, 'maxDist', 1, 500).step(1);
@@ -45,7 +42,11 @@ function _setupProperties() {
   gui.add(props, 'wavelength', 1, 50).step(1);
   gui.add(props, 'mn', 0, 3);
   gui.add(props, 'amp', 0, 1);
-  
+
+  let sampling = gui.addFolder('Recording')
+  sampling.add(props, 'numberOfFrames', 1, 180).step(1);
+  sampling.add(props, 'shutterAngle', 0.1, 1.0).step(0.1);
+
   document.querySelector('#controls').appendChild(gui.domElement);
 }
 

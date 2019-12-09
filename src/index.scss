@@ -7,15 +7,35 @@
 body {
   color: rgb(250, 250, 250);
   background: rgb(33, 33, 33);
-  font-family: sans-serif;
+  font-family: 'Share Tech Mono', sans-serif;
   font-size: 12px;
+
+
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;  
 }
 
-#index {
-  margin: 1em;
+header {
+  padding: 1rem;
+}
 
-  h1 {
-    font-size: 1.2em;
-    font-weight: normal;
+a, a:visited {
+  color: rgb(250, 250, 250);
+}
+
+
+main {
+  padding: 0 0;
+
+  ul#pieces {
+    list-style-type: none;
+    list-style-position: inside;
   }
+}
+
+h1 {
+  font-size: 1.2em;
+  font-weight: normal;
 }
