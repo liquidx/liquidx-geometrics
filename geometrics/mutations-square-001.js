@@ -14,9 +14,11 @@ function _setupProperties() {
     this.count = 8;
     this.widthScale = 0.9
 
-    this.mutateX = 1
+    this.mutateWidth = 1
+    this.shiftX = 0
+    this.shiftY = 0
     this.corner = 4
-    this.foreground = '#ffffff'
+    this.foreground = '#a9a9a9'
     this.background = '#202020'
 
     this.samplesPerFrame = 1;
@@ -32,8 +34,13 @@ function _setupProperties() {
   gui.add(props, 'count', 1, 16).step(1);
   gui.add(props, 'widthScale', 0.5, 1.5).step(0.1);
 
-  gui.add(props, 'mutateX', -10, 10).step(0.5);
+  gui.add(props, 'mutateWidth', -10, 10).step(0.5);
+  gui.add(props, 'shiftX', -10, 10).step(1);
+  gui.add(props, 'shiftY', -10, 10).step(1);
+
   gui.add(props, 'corner', 0, 10).step(0.5);
+  gui.addColor(props, 'foreground')
+  gui.addColor(props, 'background')
 
   let sampling = gui.addFolder('Recording')
   sampling.add(props, 'samplesPerFrame', 1, 4).step(1);
@@ -75,12 +82,12 @@ function endFrame() {
 // DRAW
 
 
-function drawOne(x, y, width, corner) {
+function drawOne(x, y, gridWidth, squareWidth, corner) {
   push();
-  translate(x + width / 2, y + width / 2);
+  translate(x + gridWidth / 2, y + gridWidth / 2);
   fill(props.foreground);
 
-  square(0, 0, width * props.widthScale, corner);
+  square(0, 0, squareWidth, corner);
   pop();
 }
 
@@ -91,7 +98,12 @@ function draw() {
   let oneHeight = CANVAS.height / props.count
   for (let x = 0; x < props.count; x++) {
     for (let y = 0; y < props.count; y++) {
-      drawOne(x * oneWidth, y * oneHeight, oneWidth - (x * props.mutateX), props.corner)
+      drawOne(
+        x * oneWidth + (x * props.shiftX), 
+        y * oneHeight + (y * props.shiftY), 
+        oneWidth,  
+        (oneWidth - (x * props.mutateWidth)) * props.widthScale, 
+        props.corner)
     }
   }
   endFrame();
