@@ -6,8 +6,6 @@ window.dat = dat
 // By doing this, it will put all p5 vars in to global.
 new p5()
 
-
-
 window.COLORS = {
   black: '#000000',
   darkgrey: '#333333',
@@ -38,64 +36,78 @@ window.CANVAS = {
   height: 360
 };
 
-// p5.js - capture helper methods.
+
+window.recordedBlobs = []
+
 window.CAPTURER = {
-  // This is for reference on how to make frames in to a movie.
-  ffmpeg_cmd: "ffmpeg -r 30 -f image2 -pattern_type glob -i canvas\\*.png -s 480x480 -vcodec libx264 -crf 5 -framerate 30 -vb 20M -pix_fmt yuv420p -tune stillimage animation.mp4",
-  
-  
   canvas: null,
-  frameRate: 25,
+  frameRate: 30,
   duration: 1,
   captureFrameCount: 0,
   capturedFrameIndex: 0,
-  captureFrameOnClick: false,
-  captureSequenceOnClick: false,
-  captureFn: null,
-  captureEndFn: null,
+  started: false,
   
-  init: function(canvas, frameRate, duration) {
+  init: function(canvas, width, height, frameRate, duration) {
     this.canvas = canvas;
     this.frameRate = frameRate;
     this.duration = duration;
+    this.width = width
+    this.height = height
+
+    this.stream = null
+    this.mediaRecorder = null
+
     // use hash to start or abort capture.
     var hasCapture = window.location.hash.match(/capture/);
     if (hasCapture) {
-      this.captureFrameCount = frameRate * duration;
-      this.start();
+      this.captureFrameCount = frameRate * duration
+      this.stream = this.canvas.captureStream()
     }
   },
-  
+
   start: function() {
-    this.captureFn = function(index) {
-      saveCanvas(this.canvas, "canvas" + this.paddedFrameNumber(index), "png");
-    };
-    this.captureEndFn = function() {
-      console.log("done");
-      console.log(this.ffmpeg_cmd);
+    if (this.stream && !this.started) {
+      this.mediaRecorder = new MediaRecorder(
+        this.stream, 
+        {mimeType: 'video/webm', videoBitsPerSecond: 4000000})
+      this.mediaRecorder.onstop = this.onStop
+      this.mediaRecorder.ondataavailable = this.onDataAvailable
+      this.mediaRecorder.start()
+      this.started = true
+    }
+  },
+
+  onStop: function() {
+    const blob = new Blob(window.recordedBlobs, {type: 'video/webm'});
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = 'test.webm';
+    document.body.appendChild(a)
+    a.click();
+    window.URL.revokeObjectURL(url);
+  },
+
+  onDataAvailable: function(event) {
+    if (event.data && event.data.size > 0) {
+      window.recordedBlobs.push(event.data);
     }
   },
   
-  paddedFrameNumber: function(seq) {
-    if (seq < 10) {
-      return '00' + seq;
-    }
-    else if (seq < 100) {
-      return '0' + seq;
-    }
-    else {
-      return seq;
-    }
-  },
-  
-  captureFrame: function() {    
-    if (this.captureFrameCount && this.captureFn && this.captureEndFn) {
-      this.captureFn(this.capturedFrameIndex);    
-      this.capturedFrameIndex++;
-      this.captureFrameCount--;
+  captureFrame: function(canvas) {    
+    if (this.mediaRecorder && this.captureFrameCount) {
+      this.capturedFrameIndex++
+      this.captureFrameCount--
       if (this.captureFrameCount == 0) {
-        this.captureEndFn();
+        this.mediaRecorder.stop()
       }
     }
+  },
+
+  ffmpegCommand: function() {
+    let width = this.width * pixelDensity()
+    let height = this.height * pixelDensity()
+    return `ffmpeg -r ${this.frameRate} -f image2 -pattern_type glob -i canvas\\*.png -s ${width}x${height} -vcodec libx264 -crf 5 -framerate ${this.frameRate} -vb 20M -pix_fmt yuv420p -tune stillimage animation.mp4`
   }
 };
