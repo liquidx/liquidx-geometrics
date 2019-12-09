@@ -11,7 +11,7 @@ let props = {}
 
 function _setupProperties() {
   var Properties = function() {
-    this.count = 8;
+    this.count = 10;
     this.widthScale = 0.9
 
     this.mutateWidth = 1
@@ -23,7 +23,6 @@ function _setupProperties() {
 
     this.samplesPerFrame = 1;
     this.numberOfFrames = 120;
-    this.shutterAngle = 0.6;
   };
   
   props = new Properties();
@@ -45,7 +44,6 @@ function _setupProperties() {
   let sampling = gui.addFolder('Recording')
   sampling.add(props, 'samplesPerFrame', 1, 4).step(1);
   sampling.add(props, 'numberOfFrames', 1, 180).step(1);
-  sampling.add(props, 'shutterAngle', 0.1, 1.0).step(0.1);
 
   document.querySelector('#controls').appendChild(gui.domElement);
 }
@@ -91,9 +89,11 @@ function drawOne(x, y, gridWidth, squareWidth, corner) {
   pop();
 }
 
-function draw() {
-  
-  startFrame();
+function draw() {  
+  startFrame()
+  t = map(frameCount - 1, 0, props.numberOfFrames, 0, 1)
+
+  let mutateWidth = props.mutateWidth + sin(TWO_PI * t) * 0.5
   let oneWidth = CANVAS.width / props.count
   let oneHeight = CANVAS.height / props.count
   for (let x = 0; x < props.count; x++) {
@@ -102,7 +102,7 @@ function draw() {
         x * oneWidth + (x * props.shiftX), 
         y * oneHeight + (y * props.shiftY), 
         oneWidth,  
-        (oneWidth - (x * props.mutateWidth)) * props.widthScale, 
+        (oneWidth - (x * mutateWidth)) * props.widthScale, 
         props.corner)
     }
   }
