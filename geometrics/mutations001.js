@@ -16,6 +16,8 @@ function _setupProperties() {
     this.heightScale = 0.95;
     this.mutateX = 4
     this.mutateY = 5
+    this.foreground = '#ffffff'
+    this.background = '#202020'
 
     this.samplesPerFrame = 1;
     this.numberOfFrames = 120;
@@ -24,16 +26,17 @@ function _setupProperties() {
   
   props = new Properties();
 
-  var gui = new dat.GUI({closed: true, autoplace: false});
+  var gui = new dat.GUI({closed: true, autoPlace: false, width: 320});
   gui.add(props, 'count', 1, 16).step(1);
   gui.add(props, 'widthScale', 0.5, 1.5).step(0.1);
   gui.add(props, 'heightScale', 0.5, 1.5).step(0.1);
   gui.add(props, 'mutateX', -10, 10).step(0.5);
   gui.add(props, 'mutateY', -10, 10).step(0.5);
-  gui.add(props, 'samplesPerFrame', 1, 4).step(1);
-  gui.add(props, 'numberOfFrames', 1, 180).step(1);
-  gui.add(props, 'shutterAngle', 0.1, 1.0).step(0.1);
-
+  let sampling = gui.addFolder('Recording')
+  sampling.add(props, 'samplesPerFrame', 1, 4).step(1);
+  sampling.add(props, 'numberOfFrames', 1, 180).step(1);
+  sampling.add(props, 'shutterAngle', 0.1, 1.0).step(0.1);
+  gui.closed = false;
   document.querySelector('#controls').appendChild(gui.domElement);
 }
 
@@ -57,7 +60,7 @@ function setup() {
 
 function startFrame() {
   clear();
-  background(0);
+  background(props.background);
 }
 
 function endFrame() {
@@ -72,7 +75,7 @@ function endFrame() {
 function drawOne(x, y, width, height) {
   push();
   translate(x + width / 2, y + height / 2);
-  fill('#30E0FF');
+  fill(props.foreground);
   ellipse(0, 0, width * props.widthScale, height * props.heightScale);
   pop();
 }
