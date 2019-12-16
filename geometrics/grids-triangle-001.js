@@ -21,6 +21,7 @@ function _setupProperties() {
     this.shiftY = 0
     this.shiftZ = 0
     this.inset = 8
+    this.stroke = false
     this.animate = true
     this.drawGrid = false
     this.foreground = '#a9a9a9'
@@ -49,12 +50,15 @@ function _setupProperties() {
   _shiftControllers.push(zc)
 
   _gui.add(props, 'inset',  0, 10).step(1)
+  _gui.add(props, 'stroke')
+  
   _gui.add(props, 'drawGrid')
-  _gui.add(props, 'animate')
   _gui.addColor(props, 'grid')
 
   _gui.addColor(props, 'foreground')
   _gui.addColor(props, 'background')
+
+  _gui.add(props, 'animate')
 
   let sampling = _gui.addFolder('Recording')
   sampling.add(props, 'samplesPerFrame', 1, 4).step(1);
@@ -101,8 +105,14 @@ function endFrame() {
 function drawOne(x, y, gridWidth, gridHeight, seqX, seqY, totalX, totalY) {
   push();
   translate(x, y)
-  noStroke()
-  fill(props.foreground)
+  if (props.stroke) {
+    strokeWeight(2)
+    stroke(props.foreground)
+    noFill()
+  } else {
+    fill(props.foreground)
+    noStroke()
+  }
   triangle(
     seqX * props.shiftX, 0, 
     gridWidth, seqY * props.shiftY, 
