@@ -20,6 +20,7 @@ function _setupProperties() {
     this.corner = 4
     this.foreground = '#a9a9a9'
     this.background = '#202020'
+    this.animate = true
 
     this.samplesPerFrame = 1
     this.numberOfFrames = 120
@@ -42,6 +43,7 @@ function _setupProperties() {
   gui.add(props, 'corner', 0, 10).step(0.5);
   gui.addColor(props, 'foreground')
   gui.addColor(props, 'background')
+  gui.add(props, 'animate')
 
   let sampling = gui.addFolder('Recording')
   sampling.add(props, 'samplesPerFrame', 1, 4).step(1);
@@ -99,18 +101,23 @@ function drawOne(x, y, gridWidth, squareWidth, corner) {
 function draw() {  
   CAPTURER.start()
   startFrame()
-  t = map(frameCount - 1, 0, props.numberOfFrames, 0, 1)
+  t = 0
+  if (props.animate) {
+    t = ((frameCount - 1) % props.numberOfFrames) / props.numberOfFrames
+  }
 
   let mutateWidth = props.mutateWidth + sin(TWO_PI * t) * 0.5
-  let oneWidth = (CANVAS.width - 2 * props.inset) / props.count
-  let oneHeight = (CANVAS.height - 2 * props.inset) / props.count
+  let patternWidth = (CANVAS.width - 2 * props.inset)
+  let patternHeight = (CANVAS.height - 2 * props.inset)
+  let oneWidth =  patternWidth / props.count
+  let oneHeight = patternHeight / props.count
   for (let x = 0; x < props.count; x++) {
     for (let y = 0; y < props.count; y++) {
       drawOne(
-        props.inset + x * oneWidth + (x * props.shiftX), 
-        props.inset + y * oneHeight + (y * props.shiftY), 
+        props.inset + (Math.abs(x + props.shiftX) % props.count) * oneWidth, 
+        props.inset + (Math.abs(y + props.shiftY) % props.count) * oneHeight, 
         oneWidth,  
-        (oneWidth - (x * mutateWidth)) * props.widthScale, 
+        (oneWidth - ((x + y) * mutateWidth)) * props.widthScale, 
         props.corner)
     }
   }
