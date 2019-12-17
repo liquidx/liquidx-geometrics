@@ -9,7 +9,6 @@ let canvas = null
 var t = 0;
 let props = {}
 let _gui = null
-let _shiftControllers = []
 
 function _setupProperties() {
   var Properties = function() {
@@ -71,7 +70,7 @@ function setup() {
   smooth(8);
   fill(32);
   rectMode(CENTER);
-  blendMode(ADD);
+  blendMode(NORMAL);
   noStroke();
 
   CAPTURER.init(canvas, canvas.width, canvas.height, props.frameRate, props.numberOfFrames / props.frameRate); 
@@ -137,7 +136,7 @@ function draw() {
       drawOne(
         props.inset + x * (oneWidth), 
         props.inset + y * (oneHeight), 
-        oneWidth,  
+        oneHeight,  
         oneHeight, 
         y * props.count + x + 1)
     }
