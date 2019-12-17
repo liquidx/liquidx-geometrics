@@ -70,6 +70,7 @@ function _setupProperties() {
 
 // setup, start and end frame functions
 
+// eslint-disable-next-line no-unused-vars
 function setup() {
   _setupProperties()
 
@@ -120,6 +121,7 @@ function drawOne(x, y, gridWidth, gridHeight, seqX, seqY, totalX, totalY) {
   pop();
 }
 
+// eslint-disable-next-line no-unused-vars
 function draw() {  
   CAPTURER.start()
   startFrame()

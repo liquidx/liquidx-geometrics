@@ -45,6 +45,7 @@ function _setupProperties() {
 
 // setup, start and end frame functions
 
+// eslint-disable-next-line no-unused-vars
 function setup() {
   canvas = createCanvas(CANVAS.width, CANVAS.height);
   canvas.parent("container");
@@ -83,6 +84,7 @@ function drawOne(x, y, width, height) {
   pop();
 }
 
+// eslint-disable-next-line no-unused-vars
 function draw() {
   
   startFrame();
