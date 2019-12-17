@@ -97,7 +97,7 @@ function drawOne(x, y, gridWidth, gridHeight, strokeCount) {
 
   let circleRadius = (gridWidth - props.spacing) / 2
   let ringRadiusIncrement = circleRadius / strokeCount / 2
-  let strokeWidth = circleRadius / (strokeCount + 1) / 2
+  let strokeWidth = circleRadius / (strokeCount) / 2
 
   if (props.stroke) {
     strokeWeight(strokeWidth)
@@ -114,10 +114,10 @@ function drawOne(x, y, gridWidth, gridHeight, strokeCount) {
   }
 
   for (let i = 1; i <= strokeCount; i++) {
-    // Strokes are middle strokes, to make circles appear the same size, subtract
-    // half the stroke width from the radius to use.
+    // Strokes are outer strokes, to make circles appear the same size, subtract
+    // the stroke width from the radius to use.
     circle(gridWidth / 2,  gridWidth / 2, 
-      radiusShift + ringRadiusIncrement * (i * 4) - (strokeWidth / 2))
+      radiusShift + ringRadiusIncrement * (i * 4) - (strokeWidth))
   }
   pop();
 }
