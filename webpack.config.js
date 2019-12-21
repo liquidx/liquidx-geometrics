@@ -29,6 +29,12 @@ module.exports = {
       chunks: ['index']
     }),
     new HtmlWebpackPlugin({
+      title: 'Examples',
+      filename: 'examples.html',
+      template: 'src/examples.html',
+      chunks: ['index']
+    }),    
+    new HtmlWebpackPlugin({
       filename: 'layouts/main.hbs.html',
       template: 'src/layouts/main.hbs.html',
       chunks: []
