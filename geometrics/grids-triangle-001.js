@@ -129,10 +129,9 @@ function drawOne(x, y, gridWidth, gridHeight, seqX, seqY, totalX, totalY) {
       seqY * props.shiftZ, gridHeight)
   } else if (props.triangleType == 'tm-br-bl') {
     triangle(
-      gridWidth / 2, 0, 
-      gridWidth, gridHeight - seqY * props.shiftY, 
-      0, gridHeight - seqX * props.shiftX)
-
+      gridWidth / 2, (seqX * props.shiftX) % (gridHeight), 
+      gridWidth, gridHeight - (seqY * props.shiftY) % gridHeight, 
+      0, gridHeight - (seqX * props.shiftZ) % gridHeight)
   }
   pop();
 }
