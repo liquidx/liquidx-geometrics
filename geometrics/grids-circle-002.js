@@ -22,6 +22,8 @@ function _setupProperties() {
 
     this.spacing = 16
     this.radiusMultiplier = 1.0
+    this.initialStrokes = 0
+    this.strokesMultiplier = 1
 
     this.inset = 8
     this.stroke = true
@@ -39,13 +41,16 @@ function _setupProperties() {
   props = new Properties();
 
   _gui = new dat.GUI({closed: true, autoPlace: false, width: 320})
-  _gui.closed = false;
+  _gui.closed = false
+  _gui.remember(props)
 
   _gui.add(props, 'countX', 1, 16).step(1);
   _gui.add(props, 'countY', 1, 16).step(1);
 
   _gui.add(props, 'spacing', 0, 64).step(1);
   _gui.add(props, 'radiusMultiplier', 0, 4);
+  _gui.add(props, 'initialStrokes', 0, 10).step(1)
+  _gui.add(props, 'strokesMultiplier', 0, 10).step(1)
 
   _gui.add(props, 'marginX',  0, 200).step(1);
   _gui.add(props, 'marginY',  0, 200).step(1);
@@ -151,7 +156,7 @@ function draw() {
         props.marginY + y * (oneHeight), 
         oneWidth,  
         oneHeight, 
-        y * props.countX + x + 1)
+        (y * props.countX + x) * props.strokesMultiplier + 1 + props.initialStrokes)
     }
   }
 

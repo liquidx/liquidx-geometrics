@@ -18,15 +18,17 @@ function _setupProperties() {
     this.marginX = 68
     this.marginY = 8
 
-    this.countX = 10
-    this.countY = 10
+    this.countX = 9
+    this.countY = 9
+
+    this.magX = 5
 
     this.shiftX = 0
     this.shiftY = 0
     this.shiftZ = 0
     this.unitInset = 2
 
-    this.triangleType = 'tl-tr-bl'
+    this.quad = 'mountain'
     this.stroke = false
     this.animate = true
     this.drawGrid = false
@@ -52,6 +54,8 @@ function _setupProperties() {
   _gui.add(props, 'marginX', 0, 200).step(1)
   _gui.add(props, 'marginY', 0, 200).step(1)
 
+  _gui.add(props, 'magX', 0, 10).step(1)
+
   let xc = _gui.add(props, 'shiftX', -10, 10).step(1)
   let yc = _gui.add(props, 'shiftY', -10, 10).step(1)
   let zc = _gui.add(props, 'shiftZ', -10, 10).step(1)
@@ -61,7 +65,7 @@ function _setupProperties() {
 
   _gui.add(props, 'unitInset', 0, 10).step(1)
 
-  _gui.add(props, 'triangleType', ['tl-tr-bl', 'tm-br-bl', 'mountain'])
+  _gui.add(props, 'quad', ['mountain'])
   _gui.add(props, 'stroke')
   
   _gui.add(props, 'drawGrid')
@@ -126,22 +130,12 @@ function drawOne(x, y, gridWidth, gridHeight, seqX, seqY, totalX, totalY) {
     fill(props.foreground)
     noStroke()
   }
-  if (props.triangleType == 'tl-tr-bl') {
-    triangle(
-      seqX * props.shiftX, 0, 
-      gridWidth, seqY * props.shiftY, 
-      seqY * props.shiftZ, gridHeight)
-  } else if (props.triangleType == 'tm-br-bl') {
-    triangle(
-      gridWidth / 2, (seqX * props.shiftX) % (gridHeight), 
-      gridWidth, gridHeight - (seqY * props.shiftY) % gridHeight, 
-      0, gridHeight - (seqX * props.shiftZ) % gridHeight)
-  } else if (props.triangleType == 'mountain') {
+   if (props.quad == 'mountain') {
     let unitWidth = gridWidth - 2 * props.unitInset
     let unitHeight = gridHeight - 2 * props.unitInset
     quad(
-      props.unitInset + unitWidth / 3  + seqX * props.shiftX, props.unitInset,
-      props.unitInset + unitWidth * 2 / 3  + seqX * props.shiftX, props.unitInset,
+      props.unitInset + unitWidth / 3  + (seqX - totalX/2) * props.shiftX, props.unitInset,
+      props.unitInset + unitWidth * 2 / 3  + (seqX - totalX/2) * props.shiftX, props.unitInset,
       props.unitInset + unitWidth, gridHeight - props.unitInset  - seqY * props.shiftY,
       0, gridHeight - props.unitInset - seqY * props.shiftY
     )
@@ -156,9 +150,9 @@ function draw() {
   t = map(frameCount - 1, 0, props.numberOfFrames, 0, 1)
 
   if (props.animate) {
-    props.shiftX = 2 + sin(TWO_PI  * t)
-    props.shiftY = 1 + cos(TWO_PI * 2 * t)
-    props.shiftZ = 1 + sin(TWO_PI * 2 * t)
+    props.shiftX =  props.magX * sin(TWO_PI  * t)
+    //props.shiftY = 1 + cos(TWO_PI * 2 * t)
+    //props.shiftZ = 1 + sin(TWO_PI * 2 * t)
     _shiftControllers.map(o => { o.updateDisplay() })
   }
 
