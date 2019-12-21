@@ -13,19 +13,18 @@ let _shiftControllers = []
 
 function _setupProperties() {
   var Properties = function() {
-    this.countX = 10
-    this.countY = 10
-
     this.width = 480
     this.height = 360
-
     this.marginX = 68
     this.marginY = 8
+
+    this.countX = 10
+    this.countY = 10
 
     this.shiftX = 0
     this.shiftY = 0
     this.shiftZ = 0
-    this.inset = 8
+    this.triangleType = 'tl-tr-bl'
     this.stroke = false
     this.animate = true
     this.drawGrid = false
@@ -36,6 +35,7 @@ function _setupProperties() {
     this.samplesPerFrame = 1
     this.numberOfFrames = 120
     this.frameRate = 30
+
   };
   
   props = new Properties();
@@ -57,6 +57,7 @@ function _setupProperties() {
   _shiftControllers.push(yc)
   _shiftControllers.push(zc)
 
+  _gui.add(props, 'triangleType', ['tl-tr-bl', 'tm-br-bl'])
   _gui.add(props, 'stroke')
   
   _gui.add(props, 'drawGrid')
@@ -121,10 +122,18 @@ function drawOne(x, y, gridWidth, gridHeight, seqX, seqY, totalX, totalY) {
     fill(props.foreground)
     noStroke()
   }
-  triangle(
-    seqX * props.shiftX, 0, 
-    gridWidth, seqY * props.shiftY, 
-    seqY * props.shiftZ, gridHeight)
+  if (props.triangleType == 'tl-tr-bl') {
+    triangle(
+      seqX * props.shiftX, 0, 
+      gridWidth, seqY * props.shiftY, 
+      seqY * props.shiftZ, gridHeight)
+  } else if (props.triangleType == 'tm-br-bl') {
+    triangle(
+      gridWidth / 2, 0, 
+      gridWidth, gridHeight - seqY * props.shiftY, 
+      0, gridHeight - seqX * props.shiftX)
+
+  }
   pop();
 }
 

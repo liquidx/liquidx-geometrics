@@ -10,13 +10,19 @@ let props = {}
 
 function _setupProperties() {
   var Properties = function() {
+    this.width = 480
+    this.height = 360
+
     this.count = 10;
     this.widthScale = 0.8
+
+    this.marginX = 68
+    this.marginY = 8
 
     this.mutateWidth = 1
     this.shiftX = 0
     this.shiftY = 0
-    this.inset = 8
+
     this.corner = 4
     this.foreground = '#a9a9a9'
     this.background = '#202020'
@@ -39,7 +45,9 @@ function _setupProperties() {
   gui.add(props, 'shiftX', -10, 10).step(1);
   gui.add(props, 'shiftY', -10, 10).step(1);
 
-  gui.add(props, 'inset',  0, 10).step(1);
+  gui.add(props, 'marginX',  0, 200).step(1);
+  gui.add(props, 'marginY',  0, 200).step(1);
+
   gui.add(props, 'corner', 0, 10).step(0.5);
   gui.addColor(props, 'foreground')
   gui.addColor(props, 'background')
@@ -59,7 +67,7 @@ function _setupProperties() {
 function setup() {
   _setupProperties()
 
-  p5canvas = createCanvas(CANVAS.width, CANVAS.height);
+  p5canvas = createCanvas(props.width, props.height);
   p5canvas.parent("container");
   canvas = document.querySelector('#' + p5canvas.id())
   frameRate(props.frameRate);
@@ -107,15 +115,15 @@ function draw() {
   }
 
   let mutateWidth = props.mutateWidth + sin(TWO_PI * t) * 0.5
-  let patternWidth = (CANVAS.width - 2 * props.inset)
-  let patternHeight = (CANVAS.height - 2 * props.inset)
+  let patternWidth = (props.width - 2 * props.marginX)
+  let patternHeight = (props.height - 2 * props.marginY)
   let oneWidth =  patternWidth / props.count
   let oneHeight = patternHeight / props.count
   for (let x = 0; x < props.count; x++) {
     for (let y = 0; y < props.count; y++) {
       drawOne(
-        props.inset + (Math.abs(x + props.shiftX) % props.count) * oneWidth, 
-        props.inset + (Math.abs(y + props.shiftY) % props.count) * oneHeight, 
+        props.marginX + (Math.abs(x + props.shiftX) % props.count) * oneWidth, 
+        props.marginY + (Math.abs(y + props.shiftY) % props.count) * oneHeight, 
         oneWidth,  
         (oneWidth - ((x + y) * mutateWidth)) * props.widthScale, 
         props.corner)

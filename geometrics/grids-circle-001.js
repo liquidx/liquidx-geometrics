@@ -11,7 +11,13 @@ let props = {}
 
 function _setupProperties() {
   var Properties = function() {
-    this.count = 8;
+    this.width = 480
+    this.height = 360
+    this.marginX = 68
+    this.marginY = 8
+
+    this.countX = 8;
+    this.countY = 8;
     this.widthScale = 0.95;
     this.heightScale = 0.95;
     this.mutateX = 4
@@ -29,7 +35,12 @@ function _setupProperties() {
   let gui = new dat.GUI({closed: true, autoPlace: false, width: 320})
   gui.closed = false;
 
-  gui.add(props, 'count', 1, 16).step(1);
+  gui.add(props, 'marginX',  0, 200).step(1);
+  gui.add(props, 'marginY',  0, 200).step(1);
+
+  gui.add(props, 'countX', 1, 16).step(1);
+  gui.add(props, 'countY', 1, 16).step(1);
+
   gui.add(props, 'widthScale', 0.5, 1.5).step(0.1);
   gui.add(props, 'heightScale', 0.5, 1.5).step(0.1);
   gui.add(props, 'mutateX', -10, 10).step(0.5);
@@ -88,11 +99,15 @@ function drawOne(x, y, width, height) {
 function draw() {
   
   startFrame();
-  let oneWidth = CANVAS.width / props.count
-  let oneHeight = CANVAS.height / props.count
-  for (let x = 0; x < props.count; x++) {
-    for (let y = 0; y < props.count; y++) {
-      drawOne(x * oneWidth, y * oneHeight, oneWidth - (x * props.mutateX), oneHeight - (y * props.mutateY))
+  let oneWidth = (props.width - props.marginX * 2) / props.countX
+  let oneHeight = (props.height - props.marginY * 2) / props.countY
+  for (let x = 0; x < props.countX; x++) {
+    for (let y = 0; y < props.countY; y++) {
+      drawOne(
+        props.marginX + x * oneWidth, 
+        props.marginY + y * oneHeight, 
+        oneWidth - (x * props.mutateX), 
+        oneHeight - (y * props.mutateY))
     }
   }
   endFrame();

@@ -12,8 +12,16 @@ let _gui = null
 
 function _setupProperties() {
   var Properties = function() {
-    this.count = 2
+    this.width = 480
+    this.height = 360
+    this.marginX = 68
+    this.marginY = 8
+
+    this.countX = 2
+    this.countY = 2
+
     this.spacing = 16
+    this.radiusMultiplier = 1.0
 
     this.inset = 8
     this.stroke = true
@@ -33,10 +41,15 @@ function _setupProperties() {
   _gui = new dat.GUI({closed: true, autoPlace: false, width: 320})
   _gui.closed = false;
 
-  _gui.add(props, 'count', 1, 16).step(1);
-  _gui.add(props, 'spacing', 0, 64).step(1);
+  _gui.add(props, 'countX', 1, 16).step(1);
+  _gui.add(props, 'countY', 1, 16).step(1);
 
-  _gui.add(props, 'inset',  0, 10).step(1)
+  _gui.add(props, 'spacing', 0, 64).step(1);
+  _gui.add(props, 'radiusMultiplier', 0, 4);
+
+  _gui.add(props, 'marginX',  0, 200).step(1);
+  _gui.add(props, 'marginY',  0, 200).step(1);
+
   _gui.add(props, 'stroke')
   
   _gui.add(props, 'drawGrid')
@@ -61,7 +74,7 @@ function _setupProperties() {
 function setup() {
   _setupProperties()
 
-  p5canvas = createCanvas(CANVAS.width, CANVAS.height);
+  p5canvas = createCanvas(props.width, props.height);
   p5canvas.parent("container");
   canvas = document.querySelector('#' + p5canvas.id())
   frameRate(props.frameRate);
@@ -70,7 +83,7 @@ function setup() {
   smooth(8);
   fill(32);
   rectMode(CENTER);
-  blendMode(NORMAL);
+  blendMode(ADD);
   noStroke();
 
   CAPTURER.init(canvas, canvas.width, canvas.height, props.frameRate, props.numberOfFrames / props.frameRate); 
@@ -94,7 +107,7 @@ function drawOne(x, y, gridWidth, gridHeight, strokeCount) {
   push();
   translate(x, y)
 
-  let circleRadius = (gridWidth - props.spacing) / 2
+  let circleRadius = ((Math.min(gridWidth, gridHeight) - props.spacing) / 2) * props.radiusMultiplier
   let ringRadiusIncrement = circleRadius / strokeCount / 2
   let strokeWidth = circleRadius / (strokeCount) / 2
 
@@ -127,37 +140,37 @@ function draw() {
   startFrame()
   t = ((frameCount - 1) % props.numberOfFrames) / props.numberOfFrames
 
-  let patternWidth = (CANVAS.width - 2 * props.inset)
-  let patternHeight = (CANVAS.height - 2 * props.inset)
-  let oneWidth = (patternWidth / props.count)
-  let oneHeight = (patternHeight / props.count)
-  for (let x = 0; x < props.count; x++) {
-    for (let y = 0; y < props.count; y++) {
+  let patternWidth = (props.width - 2 * props.marginX)
+  let patternHeight = (props.height - 2 * props.marginY)
+  let oneWidth = (patternWidth / props.countX)
+  let oneHeight = (patternHeight / props.countY)
+  for (let x = 0; x < props.countX; x++) {
+    for (let y = 0; y < props.countY; y++) {
       drawOne(
-        props.inset + x * (oneWidth), 
-        props.inset + y * (oneHeight), 
-        oneHeight,  
+        props.marginX + x * (oneWidth), 
+        props.marginY + y * (oneHeight), 
+        oneWidth,  
         oneHeight, 
-        y * props.count + x + 1)
+        y * props.countX + x + 1)
     }
   }
 
   if (props.drawGrid) {
     stroke(props.grid)
     strokeWeight(1)
-    for (let x = 1; x < props.count; x++) {
+    for (let x = 1; x < props.countX; x++) {
       line(
-        x * oneWidth  + props.inset, 
-        props.inset, 
-        x * oneWidth + props.inset, 
-        patternHeight)
+        x * oneWidth  + props.marginX, 
+        props.marginY, 
+        x * oneWidth + props.marginX, 
+        props.height - props.marginY)
     }
-    for (let y = 1; y < props.count; y++) {
+    for (let y = 1; y < props.countY; y++) {
       line(
-        props.inset, 
-        y * oneHeight  + props.inset, 
-        patternWidth, 
-        y * oneHeight + props.inset)
+        props.marginX, 
+        y * oneHeight  + props.marginY, 
+        props.width - props.marginX, 
+        y * oneHeight + props.marginY)
     }    
   }
   endFrame();
