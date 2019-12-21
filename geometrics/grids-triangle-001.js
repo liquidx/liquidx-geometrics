@@ -13,10 +13,15 @@ let _shiftControllers = []
 
 function _setupProperties() {
   var Properties = function() {
-    this.count = 10
-    this.widthScale = 1
+    this.countX = 10
+    this.countY = 10
 
-    this.mutateWidth = 1
+    this.width = 480
+    this.height = 360
+
+    this.marginX = 68
+    this.marginY = 8
+
     this.shiftX = 0
     this.shiftY = 0
     this.shiftZ = 0
@@ -38,10 +43,13 @@ function _setupProperties() {
   _gui = new dat.GUI({closed: true, autoPlace: false, width: 360})
   _gui.closed = false;
 
-  _gui.add(props, 'count', 1, 16).step(1);
-  _gui.add(props, 'widthScale', 0.5, 1.5).step(0.05);
 
-  _gui.add(props, 'mutateWidth', -10, 10).step(0.5);
+  _gui.add(props, 'countX', 1, 32).step(1)
+  _gui.add(props, 'countY', 1, 32).step(1)
+
+  _gui.add(props, 'marginX', 0, 200).step(1)
+  _gui.add(props, 'marginY', 0, 200).step(1)
+
   let xc = _gui.add(props, 'shiftX', -10, 10).step(1)
   let yc = _gui.add(props, 'shiftY', -10, 10).step(1)
   let zc = _gui.add(props, 'shiftZ', -10, 10).step(1)
@@ -49,7 +57,6 @@ function _setupProperties() {
   _shiftControllers.push(yc)
   _shiftControllers.push(zc)
 
-  _gui.add(props, 'inset',  0, 10).step(1)
   _gui.add(props, 'stroke')
   
   _gui.add(props, 'drawGrid')
@@ -74,7 +81,7 @@ function _setupProperties() {
 function setup() {
   _setupProperties()
 
-  p5canvas = createCanvas(CANVAS.width, CANVAS.height);
+  p5canvas = createCanvas(props.width, props.height);
   p5canvas.parent("container");
   canvas = document.querySelector('#' + p5canvas.id())
   frameRate(props.frameRate);
@@ -134,37 +141,37 @@ function draw() {
     _shiftControllers.map(o => { o.updateDisplay() })
   }
 
-  let patternWidth = (CANVAS.width - 2 * props.inset)
-  let patternHeight = (CANVAS.height - 2 * props.inset)
-  let oneWidth = patternWidth / props.count
-  let oneHeight = patternHeight / props.count
-  for (let x = 0; x < props.count; x++) {
-    for (let y = 0; y < props.count; y++) {
+  let patternWidth = (props.width - 2 * props.marginX)
+  let patternHeight = (props.height - 2 * props.marginY)
+  let oneWidth = patternWidth / props.countX
+  let oneHeight = patternHeight / props.countY
+  for (let x = 0; x < props.countX; x++) {
+    for (let y = 0; y < props.countY; y++) {
       drawOne(
-        props.inset + x * oneWidth, 
-        props.inset + y * oneHeight, 
+        props.marginX + x * oneWidth, 
+        props.marginY + y * oneHeight, 
         oneWidth,  
         oneHeight, 
-        x, y, props.count, props.count)
+        x, y, props.countX, props.countY)
     }
   }
 
   if (props.drawGrid) {
     stroke(props.grid)
     strokeWeight(1)
-    for (let x = 1; x < props.count; x++) {
+    for (let x = 1; x < props.countX; x++) {
       line(
-        x * oneWidth  + props.inset, 
-        props.inset, 
-        x * oneWidth + props.inset, 
-        patternHeight)
+        x * oneWidth  + props.marginX, 
+        props.marginY, 
+        x * oneWidth + props.marginX, 
+        props.height - props.marginY)
     }
-    for (let y = 1; y < props.count; y++) {
+    for (let y = 1; y < props.countY; y++) {
       line(
-        props.inset, 
-        y * oneHeight  + props.inset, 
-        patternWidth, 
-        y * oneHeight + props.inset)
+        props.marginX, 
+        y * oneHeight  + props.marginY, 
+        props.width - props.marginX, 
+        y * oneHeight + props.marginY)
     }    
   }
   endFrame();
