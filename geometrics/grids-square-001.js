@@ -29,7 +29,7 @@ function _setupProperties() {
   
   props = new Properties();
 
-  let gui = new dat.GUI({closed: true, autoPlace: false, width: 360})
+  let gui = new dat.GUI({closed: true, autoPlace: false, width: 320})
   gui.closed = false;
 
   gui.add(props, 'count', 1, 16).step(1);

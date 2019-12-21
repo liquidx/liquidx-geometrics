@@ -34,3 +34,22 @@ header {
 header, main, footer {
   padding: 1rem;
 }
+
+main {
+
+  #container {
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  
+    canvas {
+
+    }
+
+  }
+}
+
+footer {
+  overflow-x: hidden;
+}
