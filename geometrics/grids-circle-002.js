@@ -36,6 +36,7 @@ function _setupProperties() {
     this.samplesPerFrame = 1
     this.numberOfFrames = 120
     this.frameRate = 30
+    this.frameNumber = 0
   };
   
   props = new Properties();
@@ -91,7 +92,7 @@ function setup() {
   blendMode(ADD);
   noStroke();
 
-  CAPTURER.init(canvas, canvas.width, canvas.height, props.frameRate, props.numberOfFrames / props.frameRate); 
+  CAPTURER.init(canvas, canvas.width, canvas.height, props.frameRate, props.numberOfFrames, 'grids-circle-002'); 
 
 }
 
@@ -143,7 +144,8 @@ function drawOne(x, y, gridWidth, gridHeight, strokeCount) {
 function draw() {  
   CAPTURER.start()
   startFrame()
-  t = ((frameCount - 1) % props.numberOfFrames) / props.numberOfFrames
+  props.frameNumber += 1
+  t = map(props.frameNumber - 1, 0, props.numberOfFrames, 0, 1)
 
   let patternWidth = (props.width - 2 * props.marginX)
   let patternHeight = (props.height - 2 * props.marginY)

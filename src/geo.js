@@ -42,17 +42,18 @@ window.recordedBlobs = []
 window.CAPTURER = {
   canvas: null,
   frameRate: 30,
-  duration: 1,
-  captureFrameCount: 0,
+  frameCount: 120,
+  captureFrameRemaining: 0,
   capturedFrameIndex: 0,
   started: false,
   
-  init: function(canvas, width, height, frameRate, duration) {
+  init: function(canvas, width, height, frameRate, frameCount, name) {
     this.canvas = canvas;
     this.frameRate = frameRate;
-    this.duration = duration;
+    this.frameCount = frameCount;
     this.width = width
     this.height = height
+    this.name = name
 
     this.stream = null
     this.mediaRecorder = null
@@ -60,9 +61,14 @@ window.CAPTURER = {
     // use hash to start or abort capture.
     var hasCapture = window.location.hash.match(/capture/);
     if (hasCapture) {
-      this.captureFrameCount = frameRate * duration
-      this.stream = this.canvas.captureStream()
-    }
+      this.enableCapture()
+    }    
+  },
+
+  enableCapture: function() {
+    frameCount = 1
+    this.captureFrameRemaining = this.frameCount
+    this.stream = this.canvas.captureStream(this.frameRate)
   },
 
   start: function() {
@@ -83,7 +89,7 @@ window.CAPTURER = {
     const a = document.createElement('a');
     a.style.display = 'none';
     a.href = url;
-    a.download = 'test.webm';
+    a.download = window.CAPTURER.name + '.webm';
     document.body.appendChild(a)
     a.click();
     window.URL.revokeObjectURL(url);
@@ -96,10 +102,11 @@ window.CAPTURER = {
   },
   
   captureFrame: function(canvas) {    
-    if (this.mediaRecorder && this.captureFrameCount) {
+    if (this.mediaRecorder && this.captureFrameRemaining > 0) {
+      console.log(this.capturedFrameIndex)
       this.capturedFrameIndex++
-      this.captureFrameCount--
-      if (this.captureFrameCount == 0) {
+      this.captureFrameRemaining--
+      if (this.captureFrameRemaining == 0) {
         this.mediaRecorder.stop()
       }
     }

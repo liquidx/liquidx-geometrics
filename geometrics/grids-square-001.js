@@ -31,6 +31,7 @@ function _setupProperties() {
     this.samplesPerFrame = 1
     this.numberOfFrames = 120
     this.frameRate = 30
+    this.frameNumber = 0
   };
   
   props = new Properties();
@@ -61,36 +62,6 @@ function _setupProperties() {
   document.querySelector('#controls').appendChild(gui.domElement);
 }
 
-// setup, start and end frame functions
-
-// eslint-disable-next-line no-unused-vars
-function setup() {
-  _setupProperties()
-
-  p5canvas = createCanvas(props.width, props.height);
-  p5canvas.parent("container");
-  canvas = document.querySelector('#' + p5canvas.id())
-  frameRate(props.frameRate);
-  
-  pixelDensity(2);
-  smooth(8);
-  fill(32);
-  rectMode(CENTER);
-  blendMode(ADD);
-  noStroke();
-
-  CAPTURER.init(canvas, canvas.width, canvas.height, props.frameRate, props.numberOfFrames / props.frameRate); 
-
-}
-
-function startFrame() {
-  clear();
-  background(props.background);
-}
-
-function endFrame() {
-  CAPTURER.captureFrame(canvas);
-}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // DRAW
@@ -109,9 +80,12 @@ function drawOne(x, y, gridWidth, squareWidth, corner) {
 function draw() {  
   CAPTURER.start()
   startFrame()
+
+
   t = 0
   if (props.animate) {
-    t = ((frameCount - 1) % props.numberOfFrames) / props.numberOfFrames
+    props.frameNumber += 1
+    t = map(props.frameNumber - 1, 0, props.numberOfFrames, 0, 1)
   }
 
   let mutateWidth = props.mutateWidth + sin(TWO_PI * t) * 0.5
@@ -133,3 +107,42 @@ function draw() {
 }
 
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// setup, start and end frame functions
+
+// eslint-disable-next-line no-unused-vars
+function setup() {
+  _setupProperties()
+
+  p5canvas = createCanvas(props.width, props.height);
+  p5canvas.parent("container");
+  canvas = document.querySelector('#' + p5canvas.id())
+  frameRate(props.frameRate);
+  
+  pixelDensity(2);
+  smooth(8);
+  fill(32);
+  rectMode(CENTER);
+  blendMode(ADD);
+  noStroke();
+
+  CAPTURER.init(canvas, canvas.width, canvas.height, props.frameRate, props.numberOfFrames, 'grids-square-001'); 
+
+  document.querySelector('#capture').addEventListener('click', e => {
+    props.frameNumber = 1
+    CAPTURER.enableCapture()
+    CAPTURER.start()
+    e.stopPropagation()
+    return false;
+  })  
+}
+
+function startFrame() {
+  clear();
+  background(props.background);
+}
+
+function endFrame() {
+  CAPTURER.captureFrame(canvas);
+}

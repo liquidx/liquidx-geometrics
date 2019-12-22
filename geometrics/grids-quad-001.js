@@ -39,7 +39,7 @@ function _setupProperties() {
     this.samplesPerFrame = 1
     this.numberOfFrames = 120
     this.frameRate = 30
-
+    this.frameNumber = 0
   };
   
   props = new Properties();
@@ -84,36 +84,6 @@ function _setupProperties() {
   document.querySelector('#controls').appendChild(_gui.domElement);
 }
 
-// setup, start and end frame functions
-
-// eslint-disable-next-line no-unused-vars
-function setup() {
-  _setupProperties()
-
-  p5canvas = createCanvas(props.width, props.height);
-  p5canvas.parent("container");
-  canvas = document.querySelector('#' + p5canvas.id())
-  frameRate(props.frameRate);
-  
-  pixelDensity(2);
-  smooth(8);
-  fill(32);
-  rectMode(CENTER);
-  blendMode(ADD);
-  noStroke();
-
-  CAPTURER.init(canvas, canvas.width, canvas.height, props.frameRate, props.numberOfFrames / props.frameRate); 
-
-}
-
-function startFrame() {
-  clear();
-  background(props.background);
-}
-
-function endFrame() {
-  CAPTURER.captureFrame(canvas);
-}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // DRAW
@@ -147,7 +117,8 @@ function drawOne(x, y, gridWidth, gridHeight, seqX, seqY, totalX, totalY) {
 function draw() {  
   CAPTURER.start()
   startFrame()
-  t = map(frameCount - 1, 0, props.numberOfFrames, 0, 1)
+  props.frameNumber += 1
+  t = map(props.frameNumber - 1, 0, props.numberOfFrames, 0, 1)
 
   if (props.animate) {
     props.shiftX =  props.magX * sin(TWO_PI  * t)
@@ -193,3 +164,36 @@ function draw() {
 }
 
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+// setup, start and end frame functions
+
+// eslint-disable-next-line no-unused-vars
+function setup() {
+  _setupProperties()
+
+  p5canvas = createCanvas(props.width, props.height);
+  p5canvas.parent("container");
+  canvas = document.querySelector('#' + p5canvas.id())
+  frameRate(props.frameRate);
+  
+  pixelDensity(2);
+  smooth(8);
+  fill(32);
+  rectMode(CENTER);
+  blendMode(ADD);
+  noStroke();
+
+  CAPTURER.init(canvas, canvas.width, canvas.height, props.frameRate, props.numberOfFrames, 'grids-quad-001'); 
+
+}
+
+function startFrame() {
+  clear();
+  background(props.background);
+}
+
+function endFrame() {
+  CAPTURER.captureFrame(canvas);
+}
