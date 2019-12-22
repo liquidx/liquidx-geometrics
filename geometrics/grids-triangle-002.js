@@ -141,7 +141,7 @@ function drawOne(x, y, gridWidth, gridHeight, seqX, seqY, totalX, totalY) {
   vertex(ax, ay)
   vertex(bx, by)
   vertex(cx, cy)
-  endShape()
+  endShape(CLOSE)
   
   pop()
 }
