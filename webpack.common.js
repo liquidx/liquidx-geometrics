@@ -1,15 +1,41 @@
 
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const path = require('path')
+const fs = require('fs')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+
+const geometricEntries = () => {
+  let basicEntries = {
+    index: ['./src/index.scss'],
+    geo: ['./src/geo.js', './src/geo.scss']
+  }
+
+  return new Promise((resolve, reject) => {
+    fs.readdir(path.join(__dirname, 'geometrics'), (err, files) =>{
+      if (err) {
+        reject(err)
+        return
+      }
+
+      let targets = basicEntries
+      for (let f of files) {
+        let k = path.basename(f).replace('.js', '')
+        targets[k] = ['./geometrics/' + f]
+      }
+      resolve(targets)
+    })
+  })
+}
 
 module.exports = {
   mode: 'development',  
-  entry: { 
-    index: ['./src/index.js', './src/index.scss'],
-    geo: ['./src/geo.js', './src/geo.scss']
-  },
+  entry: geometricEntries,
+  // entry: { 
+  //   index: ['./src/index.js', './src/index.scss'],
+  //   geo: ['./src/geo.js', './src/geo.scss']
+  // },
+
   output: {
     path: path.resolve(__dirname, 'public'),
     filename: '[name].js',
@@ -60,6 +86,10 @@ module.exports = {
         use: [
           'file-loader'
         ]
+      },
+      {
+        test : /\.js$/,
+        loader: 'babel-loader'
       },
       {
         test: /\.scss$/,
