@@ -1,5 +1,7 @@
-/* eslint-disable no-undef */
+import p5 from 'p5'
+import dat from 'dat.gui'
 
+import { squareGrid, squareGridLines } from '../parts/grids.js'
 
 // The canvas.
 let p5canvas = null
@@ -10,177 +12,176 @@ var t = 0;
 let props = {}
 let _gui = null
 
-function _setupProperties() {
-  var Properties = function() {
-    this.width = 480
-    this.height = 360
-    this.marginX = 68
-    this.marginY = 8
+let sketch = new p5(s => {
 
-    this.countX = 2
-    this.countY = 2
-
-    this.spacing = 16
-    this.radiusMultiplier = 1.0
-    this.initialStrokes = 0
-    this.strokesMultiplier = 1
-
-    this.inset = 8
-    this.stroke = true
-    this.animate = false
-    this.drawGrid = false
-    this.foreground = '#a9a9a9'
-    this.background = '#202020'
-    this.grid = '#990000'
-
-    this.samplesPerFrame = 1
-    this.numberOfFrames = 120
-    this.frameRate = 30
-    this.frameNumber = 0
-  };
+  s.draw = () => {
+    s.startFrame()
+    props.frameNumber += 1
+    t = s.map(props.frameNumber, 0, props.numberOfFrames, 0, 1)
   
-  props = new Properties();
+    let patternWidth = (props.width - 2 * props.marginX)
+    let patternHeight = (props.height - 2 * props.marginY)
 
-  _gui = new dat.GUI({closed: true, autoPlace: false, width: 320})
-  _gui.closed = false
-  _gui.remember(props)
-
-  _gui.add(props, 'countX', 1, 16).step(1);
-  _gui.add(props, 'countY', 1, 16).step(1);
-
-  _gui.add(props, 'spacing', 0, 64).step(1);
-  _gui.add(props, 'radiusMultiplier', 0, 4);
-  _gui.add(props, 'initialStrokes', 0, 10).step(1)
-  _gui.add(props, 'strokesMultiplier', 0, 10).step(1)
-
-  _gui.add(props, 'marginX',  0, 200).step(1);
-  _gui.add(props, 'marginY',  0, 200).step(1);
-
-  _gui.add(props, 'stroke')
+    squareGrid(s, {},
+      props.marginX, 
+      props.marginY,
+      patternWidth,
+      patternHeight,
+      props.countX,
+      props.countY,
+      drawOne
+    )
   
-  _gui.add(props, 'drawGrid')
-  _gui.addColor(props, 'grid')
-
-  _gui.addColor(props, 'foreground')
-  _gui.addColor(props, 'background')
-
-  _gui.add(props, 'animate')
-
-  let sampling = _gui.addFolder('Recording')
-  sampling.add(props, 'samplesPerFrame', 1, 4).step(1);
-  sampling.add(props, 'numberOfFrames', 1, 180).step(1);
-  sampling.add(props, 'frameRate', 1, 60).step(1);
-
-  document.querySelector('#controls').appendChild(_gui.domElement);
-}
-
-// setup, start and end frame functions
-
-// eslint-disable-next-line no-unused-vars
-function setup() {
-  _setupProperties()
-
-  p5canvas = createCanvas(props.width, props.height);
-  p5canvas.parent("container");
-  canvas = document.querySelector('#' + p5canvas.id())
-  frameRate(props.frameRate);
-  
-  pixelDensity(2);
-  smooth(8);
-  fill(32);
-  rectMode(CENTER);
-  blendMode(ADD);
-  noStroke();
-
-  CAPTURER.init(canvas, canvas.width, canvas.height, props.frameRate, props.numberOfFrames, 'grids-circle-002'); 
-
-}
-
-function startFrame() {
-  clear();
-  background(props.background);
-}
-
-function endFrame() {
-  CAPTURER.captureFrame(canvas);
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
-// DRAW
-
-
-function drawOne(x, y, gridWidth, gridHeight, strokeCount) {
-  push();
-  translate(x, y)
-
-  let circleRadius = ((Math.min(gridWidth, gridHeight) - props.spacing) / 2) * props.radiusMultiplier
-  let ringRadiusIncrement = circleRadius / strokeCount / 2
-  let strokeWidth = circleRadius / (strokeCount) / 2
-
-  if (props.stroke) {
-    strokeWeight(strokeWidth)
-    stroke(props.foreground)
-    noFill()
-  } else {
-    fill(props.foreground)
-    noStroke()
-  }
-
-  let radiusShift = 0
-  if (props.animate) {
-    radiusShift = (sin(TWO_PI * t) + 1) * -(ringRadiusIncrement)
-  }
-
-  for (let i = 1; i <= strokeCount; i++) {
-    // Strokes are outer strokes, to make circles appear the same size, subtract
-    // the stroke width from the radius to use.
-    circle(gridWidth / 2,  gridWidth / 2, 
-      radiusShift + ringRadiusIncrement * (i * 4) - (strokeWidth))
-  }
-  pop();
-}
-
-// eslint-disable-next-line no-unused-vars
-function draw() {  
-  CAPTURER.start()
-  startFrame()
-  props.frameNumber += 1
-  t = map(props.frameNumber - 1, 0, props.numberOfFrames, 0, 1)
-
-  let patternWidth = (props.width - 2 * props.marginX)
-  let patternHeight = (props.height - 2 * props.marginY)
-  let oneWidth = (patternWidth / props.countX)
-  let oneHeight = (patternHeight / props.countY)
-  for (let x = 0; x < props.countX; x++) {
-    for (let y = 0; y < props.countY; y++) {
-      drawOne(
-        props.marginX + x * (oneWidth), 
-        props.marginY + y * (oneHeight), 
-        oneWidth,  
-        oneHeight, 
-        (y * props.countX + x) * props.strokesMultiplier + 1 + props.initialStrokes)
-    }
-  }
-
-  if (props.drawGrid) {
-    stroke(props.grid)
-    strokeWeight(1)
-    for (let x = 1; x < props.countX; x++) {
-      line(
-        x * oneWidth  + props.marginX, 
-        props.marginY, 
-        x * oneWidth + props.marginX, 
-        props.height - props.marginY)
-    }
-    for (let y = 1; y < props.countY; y++) {
-      line(
+    if (props.drawGrid) {
+      squareGridLines(s, {},
         props.marginX, 
-        y * oneHeight  + props.marginY, 
-        props.width - props.marginX, 
-        y * oneHeight + props.marginY)
-    }    
+        props.marginY,
+        patternWidth,
+        patternHeight,
+        props.countX,
+        props.countY,
+        props.grid
+      )
+    }
+    s.endFrame();
   }
-  endFrame();
-}
 
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  const drawOne = (s, options, originX, originY, cellWidth, cellHeight, seqX, seqY, percentX, percentY) => {
+    s.push()
+    s.translate(originX, originY)
+  
+    let strokeCount =  (seqY * props.countX + seqX) * props.strokesMultiplier + 1 + props.initialStrokes
+    let circleRadius = ((Math.min(cellWidth, cellHeight) - props.spacing) / 2) * props.radiusMultiplier
+    let ringRadiusIncrement = circleRadius / strokeCount / 2
+    let strokeWidth = circleRadius / (strokeCount) / 2
+  
+    if (props.stroke) {
+      s.strokeWeight(strokeWidth)
+      s.stroke(props.foreground)
+      s.noFill()
+    } else {
+      s.fill(props.foreground)
+      s.noStroke()
+    }
+  
+    let radiusShift = 0
+    if (props.animate) {
+      radiusShift = (s.sin(s.TWO_PI * t) + 1) * -(ringRadiusIncrement)
+    }
+  
+    for (let i = 1; i <= strokeCount; i++) {
+      // Strokes are outer strokes, to make circles appear the same size, subtract
+      // the stroke width from the radius to use.
+      s.circle(cellWidth / 2,  cellWidth / 2, 
+        radiusShift + ringRadiusIncrement * (i * 4) - (strokeWidth))
+    }
+    s.pop();
+  }
 
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  const setupProperties = () => {
+    var Properties = function() {
+      this.width = 480
+      this.height = 360
+      this.marginX = 68
+      this.marginY = 8
+  
+      this.countX = 2
+      this.countY = 2
+  
+      this.spacing = 16
+      this.radiusMultiplier = 1.0
+      this.initialStrokes = 0
+      this.strokesMultiplier = 1
+  
+      this.inset = 8
+      this.stroke = true
+      this.animate = false
+      this.drawGrid = false
+      this.foreground = '#a9a9a9'
+      this.background = '#202020'
+      this.grid = '#990000'
+  
+      this.samplesPerFrame = 1
+      this.numberOfFrames = 120
+      this.frameRate = 30
+      this.frameNumber = 0
+    };
+    
+    props = new Properties();
+  
+    _gui = new dat.GUI({closed: true, autoPlace: false, width: 320})
+    _gui.closed = false
+    _gui.remember(props)
+  
+    _gui.add(props, 'countX', 1, 16).step(1);
+    _gui.add(props, 'countY', 1, 16).step(1);
+  
+    _gui.add(props, 'spacing', 0, 64).step(1);
+    _gui.add(props, 'radiusMultiplier', 0, 4);
+    _gui.add(props, 'initialStrokes', 0, 10).step(1)
+    _gui.add(props, 'strokesMultiplier', 0, 10).step(1)
+  
+    _gui.add(props, 'marginX',  0, 200).step(1);
+    _gui.add(props, 'marginY',  0, 200).step(1);
+  
+    _gui.add(props, 'stroke')
+    
+    _gui.add(props, 'drawGrid')
+    _gui.addColor(props, 'grid')
+  
+    _gui.addColor(props, 'foreground')
+    _gui.addColor(props, 'background')
+  
+    _gui.add(props, 'animate')
+  
+    let sampling = _gui.addFolder('Recording')
+    sampling.add(props, 'samplesPerFrame', 1, 4).step(1);
+    sampling.add(props, 'numberOfFrames', 1, 180).step(1);
+    sampling.add(props, 'frameRate', 1, 60).step(1);
+  
+    document.querySelector('#controls').appendChild(_gui.domElement);
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+
+  s.setup = () => {
+    setupProperties()
+
+    p5canvas = s.createCanvas(props.width, props.height);
+    p5canvas.parent("container");
+    canvas = document.querySelector('#' + p5canvas.id())
+    s.frameRate(props.frameRate);
+    
+    s.pixelDensity(2);
+    s.smooth(8);
+    s.fill(32);
+    s.rectMode(s.CENTER);
+    s.blendMode(s.ADD);
+    s.noStroke();
+
+    CAPTURER.init(canvas, 
+      canvas.width, canvas.height, 
+      props.frameRate, 
+      props.numberOfFrames, 
+      'animation')
+
+    document.querySelector('#capture').addEventListener('click', e => {
+      props.frameNumber = 1
+      CAPTURER.enableCapture()
+      CAPTURER.start()
+      e.stopPropagation()
+      return false;
+    })
+  }
+
+  s.startFrame = () => {
+    s.clear();
+    s.background(props.background);
+  }
+
+  s.endFrame = () => {
+    CAPTURER.captureFrame(canvas);
+  }
+})

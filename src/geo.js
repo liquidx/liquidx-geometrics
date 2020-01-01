@@ -1,10 +1,10 @@
-import p5 from 'p5'
+//import p5 from 'p5'
 import dat from 'dat.gui'
 
 window.dat = dat
 
 // By doing this, it will put all p5 vars in to global.
-new p5()
+//new p5()
 
 window.COLORS = {
   black: '#000000',

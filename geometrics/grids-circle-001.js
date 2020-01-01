@@ -1,116 +1,148 @@
-/* eslint-disable no-undef */
+import p5 from 'p5'
+import dat from 'dat.gui'
+
+import { squareGrid, squareGridLines } from '../parts/grids.js'
 
 // The canvas.
-var canvas = null;
+let p5canvas = null
+let canvas = null
 
 // Animation
-var t = 0;
-var targetFrameRate = 30;
-var loopDuration = 3;
+let t = 0;
 let props = {}
 
-function _setupProperties() {
-  var Properties = function() {
-    this.width = 480
-    this.height = 360
-    this.marginX = 68
-    this.marginY = 8
+let sketch = new p5(s => {
 
-    this.countX = 8;
-    this.countY = 8;
-    this.widthScale = 0.95;
-    this.heightScale = 0.95;
-    this.mutateX = 4
-    this.mutateY = 5
-    this.foreground = '#ffffff'
-    this.background = '#202020'
-
-    this.samplesPerFrame = 1;
-    this.numberOfFrames = 120;
-    this.shutterAngle = 0.6;
-  };
+  s.draw = () => {
+    s.startFrame()
+    props.frameNumber += 1
+    t = s.map(props.frameNumber, 0, props.numberOfFrames, 0, 1)
   
-  props = new Properties();
+    let patternWidth = (props.width - 2 * props.marginX)
+    let patternHeight = (props.height - 2 * props.marginY)
 
-  let gui = new dat.GUI({closed: true, autoPlace: false, width: 320})
-  gui.closed = false;
-
-  gui.add(props, 'marginX',  0, 200).step(1);
-  gui.add(props, 'marginY',  0, 200).step(1);
-
-  gui.add(props, 'countX', 1, 16).step(1);
-  gui.add(props, 'countY', 1, 16).step(1);
-
-  gui.add(props, 'widthScale', 0.5, 1.5).step(0.1);
-  gui.add(props, 'heightScale', 0.5, 1.5).step(0.1);
-  gui.add(props, 'mutateX', -10, 10).step(0.5);
-  gui.add(props, 'mutateY', -10, 10).step(0.5);
-
-  let sampling = gui.addFolder('Recording')
-  sampling.add(props, 'samplesPerFrame', 1, 4).step(1);
-  sampling.add(props, 'numberOfFrames', 1, 180).step(1);
-  sampling.add(props, 'shutterAngle', 0.1, 1.0).step(0.1);
-
-  document.querySelector('#controls').appendChild(gui.domElement);
-}
-
-// setup, start and end frame functions
-
-// eslint-disable-next-line no-unused-vars
-function setup() {
-  canvas = createCanvas(CANVAS.width, CANVAS.height);
-  canvas.parent("container");
-  frameRate(targetFrameRate);
-  CAPTURER.init(canvas, targetFrameRate, loopDuration); 
-
-  _setupProperties()
+    squareGrid(s, {},
+      props.marginX, 
+      props.marginY,
+      patternWidth,
+      patternHeight,
+      props.countX,
+      props.countY,
+      drawOne
+    )
   
-  pixelDensity(2);
-  smooth(8);
-  fill(32);
-  rectMode(CENTER);
-  blendMode(ADD);
-  noStroke();
-}
-
-function startFrame() {
-  clear();
-  background(props.background);
-}
-
-function endFrame() {
-  CAPTURER.captureFrame();
-  t = t + 1;  // increment frame.
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
-// DRAW
-
-
-function drawOne(x, y, width, height) {
-  push();
-  translate(x + width / 2, y + height / 2);
-  fill(props.foreground);
-  ellipse(0, 0, width * props.widthScale, height * props.heightScale);
-  pop();
-}
-
-// eslint-disable-next-line no-unused-vars
-function draw() {
-  
-  startFrame();
-  let oneWidth = (props.width - props.marginX * 2) / props.countX
-  let oneHeight = (props.height - props.marginY * 2) / props.countY
-  for (let x = 0; x < props.countX; x++) {
-    for (let y = 0; y < props.countY; y++) {
-      drawOne(
-        props.marginX + x * oneWidth, 
-        props.marginY + y * oneHeight, 
-        oneWidth - (x * props.mutateX), 
-        oneHeight - (y * props.mutateY))
+    if (props.drawGrid) {
+      squareGridLines(
+        s,
+        {},
+        props.marginX, 
+        props.marginY,
+        patternWidth,
+        patternHeight,
+        props.countX,
+        props.countY,
+        props.grid
+      )
     }
+    s.endFrame();
   }
-  endFrame();
-}
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  const drawOne = (s, options, originX, originY, cellWidth, cellHeight, seqX, seqY, percentX, percentY) => {
+    s.push();
+    s.translate(originX + cellWidth / 2, originY + cellHeight / 2);
+    s.fill(props.foreground);
+    s.ellipse(0, 0, cellWidth * props.widthScale - (seqX * props.mutateX), cellHeight * props.heightScale - (seqY * props.mutateY));
+    s.pop();
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  const setupProperties = () => {
+    var Properties = function() {
+      this.width = 480
+      this.height = 360
+      this.marginX = 68
+      this.marginY = 8
+  
+      this.countX = 8;
+      this.countY = 8;
+      this.widthScale = 0.95;
+      this.heightScale = 0.95;
+      this.mutateX = 4
+      this.mutateY = 5
+      this.foreground = '#ffffff'
+      this.background = '#202020'
+  
+      this.samplesPerFrame = 1;
+      this.numberOfFrames = 120;
+    };
+    
+    props = new Properties();
+  
+    let gui = new dat.GUI({closed: true, autoPlace: false, width: 320})
+    gui.closed = false;
+  
+    gui.add(props, 'marginX',  0, 200).step(1);
+    gui.add(props, 'marginY',  0, 200).step(1);
+  
+    gui.add(props, 'countX', 1, 16).step(1);
+    gui.add(props, 'countY', 1, 16).step(1);
+  
+    gui.add(props, 'widthScale', 0.5, 1.5).step(0.1);
+    gui.add(props, 'heightScale', 0.5, 1.5).step(0.1);
+    gui.add(props, 'mutateX', -10, 10).step(0.5);
+    gui.add(props, 'mutateY', -10, 10).step(0.5);
+  
+    let sampling = gui.addFolder('Recording')
+    sampling.add(props, 'samplesPerFrame', 1, 4).step(1);
+    sampling.add(props, 'numberOfFrames', 1, 180).step(1);
+  
+    document.querySelector('#controls').appendChild(gui.domElement);
+  }
+  
+
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+
+  s.setup = () => {
+    setupProperties()
+
+    p5canvas = s.createCanvas(props.width, props.height);
+    p5canvas.parent("container");
+    canvas = document.querySelector('#' + p5canvas.id())
+    s.frameRate(props.frameRate);
+    
+    s.pixelDensity(2);
+    s.smooth(8);
+    s.fill(32);
+    s.rectMode(s.CENTER);
+    s.blendMode(s.ADD);
+    s.noStroke();
+
+    CAPTURER.init(canvas, 
+      canvas.width, canvas.height, 
+      props.frameRate, 
+      props.numberOfFrames, 
+      'animation')
+
+    document.querySelector('#capture').addEventListener('click', e => {
+      props.frameNumber = 1
+      CAPTURER.enableCapture()
+      CAPTURER.start()
+      e.stopPropagation()
+      return false;
+    })
+  }
+
+  s.startFrame = () => {
+    s.clear();
+    s.background(props.background);
+  }
+
+  s.endFrame = () => {
+    CAPTURER.captureFrame(canvas);
+  }
+})
+
 
 
