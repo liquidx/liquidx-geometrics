@@ -15,6 +15,7 @@ body {
   flex-direction: column;
   flex-wrap: nowrap;
   justify-content: flex-start;
+  user-select: none;
 }
 
 h1 {
