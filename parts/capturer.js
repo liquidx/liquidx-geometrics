@@ -56,7 +56,7 @@ class Capturer {
 
   captureFrame() {    
     if (this.mediaRecorder && this.captureFrameRemaining > 0) {
-      console.log(this.captureFrameRemaining)
+      //console.log(this.captureFrameRemaining)
       this.captureFrameRemaining--
       if (this.captureFrameRemaining == 0) {
         this.mediaRecorder.stop()

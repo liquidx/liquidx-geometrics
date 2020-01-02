@@ -1,13 +1,11 @@
+/* eslint-disable no-unused-vars */
+
 const squareGridDraw = (context, originX, originY, cellWidth, cellHeight, seqX, seqY, percentX, percentY) => {
 }
 
 const squareGrid = (s, context, originX, originY, width, height, countX, countY, drawAtGrid) => {
   let cellWidth = width / countX
   let cellHeight = height / countY
-
-  if (s.frameCount < 10) {
-    console.log(cellWidth, cellHeight)
-  }
 
   for (let x = 0; x < countX; x++) {
     for (let y = 0; y < countY; y++) {
@@ -48,5 +46,7 @@ const squareGridLines = (s, context, originX, originY, width, height, countX, co
   }    
 }
 
-module.exports.squareGrid = squareGrid
-module.exports.squareGridLines = squareGridLines
+const _squareGrid = squareGrid
+export { _squareGrid as squareGrid }
+const _squareGridLines = squareGridLines
+export { _squareGridLines as squareGridLines }
