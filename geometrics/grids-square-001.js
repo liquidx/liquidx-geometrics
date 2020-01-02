@@ -10,19 +10,19 @@ let canvas = null
 let _capturer = null
 
 // Animation
-let props = {}
+let _props = {}
 
 // eslint-disable-next-line no-unused-vars
 let sketch = new p5(s => {
 
   s.draw = () => {
     s.startFrame()
-    if (props.animate) {
-      props.frameNumber += 1
+    if (_props.animate) {
+      _props.frameNumber += 1
     }
   
-    let patternWidth = (props.width - 2 * props.marginX)
-    let patternHeight = (props.height - 2 * props.marginY)
+    let patternWidth = (_props.width - 2 * _props.marginX)
+    let patternHeight = (_props.height - 2 * _props.marginY)
 
     const transform = (context, cell, seq) => {
       let t = s.map(context.frameNumber, 0, context.numberOfFrames, 0, 1)
@@ -32,29 +32,29 @@ let sketch = new p5(s => {
     }
 
     squareGrid(
-      s, props,
+      s, _props,
 
-      props.marginX, 
-      props.marginY,
+      _props.marginX, 
+      _props.marginY,
       patternWidth,
       patternHeight,
-      props.count,
-      props.count,
+      _props.count,
+      _props.count,
 
       onePolySquare,
       transform
     )
   
-    if (props.drawGrid) {
+    if (_props.drawGrid) {
       squareGridLines(
-        s, props,
-        props.marginX, 
-        props.marginY,
+        s, _props,
+        _props.marginX, 
+        _props.marginY,
         patternWidth,
         patternHeight,
-        props.count,
-        props.count,
-        props.grid
+        _props.count,
+        _props.count,
+        _props.grid
       )
     }
     s.endFrame();
@@ -87,31 +87,31 @@ let sketch = new p5(s => {
       this.frameRate = 30
     };
     
-    props = new Properties();
+    _props = new Properties();
   
     let gui = new dat.GUI({closed: true, autoPlace: false, width: 320})
     gui.closed = false;
   
-    gui.add(props, 'count', 1, 16).step(1);
-    gui.add(props, 'scaleWidth', 0.5, 1.5).step(0.05);
+    gui.add(_props, 'count', 1, 16).step(1);
+    gui.add(_props, 'scaleWidth', 0.5, 1.5).step(0.05);
   
-    gui.add(props, 'animatedScaleWidth', -10, 10).step(0.5);
-    gui.add(props, 'shiftX', -10, 10).step(1);
-    gui.add(props, 'shiftY', -10, 10).step(1);
+    gui.add(_props, 'animatedScaleWidth', -10, 10).step(0.5);
+    gui.add(_props, 'shiftX', -10, 10).step(1);
+    gui.add(_props, 'shiftY', -10, 10).step(1);
   
-    gui.add(props, 'marginX',  0, 200).step(1);
-    gui.add(props, 'marginY',  0, 200).step(1);
+    gui.add(_props, 'marginX',  0, 200).step(1);
+    gui.add(_props, 'marginY',  0, 200).step(1);
   
-    gui.add(props, 'corner', 0, 10).step(0.5);
-    gui.addColor(props, 'foreground')
-    gui.addColor(props, 'background')
+    gui.add(_props, 'corner', 0, 10).step(0.5);
+    gui.addColor(_props, 'foreground')
+    gui.addColor(_props, 'background')
 
-    gui.add(props, 'animate')
-    gui.add(props, 'frameNumber', 0, props.numberOfFrames).step(1)
+    gui.add(_props, 'animate')
+    gui.add(_props, 'frameNumber', 0, _props.numberOfFrames).step(1)
   
     let sampling = gui.addFolder('Recording')
-    sampling.add(props, 'numberOfFrames', 1, 180).step(1);
-    sampling.add(props, 'frameRate', 1, 60).step(1);
+    sampling.add(_props, 'numberOfFrames', 1, 180).step(1);
+    sampling.add(_props, 'frameRate', 1, 60).step(1);
   
     document.querySelector('#controls').appendChild(gui.domElement);
   }
@@ -121,10 +121,10 @@ let sketch = new p5(s => {
   s.setup = () => {
     setupProperties()
 
-    p5canvas = s.createCanvas(props.width, props.height);
+    p5canvas = s.createCanvas(_props.width, _props.height);
     p5canvas.parent("container");
     canvas = document.querySelector('#' + p5canvas.id())
-    s.frameRate(props.frameRate);
+    s.frameRate(_props.frameRate);
     
     s.pixelDensity(2);
     s.smooth(8);
@@ -133,10 +133,10 @@ let sketch = new p5(s => {
     s.blendMode(s.ADD);
     s.noStroke();
 
-    _capturer = new Capturer(canvas, canvas.width, canvas.height, props.frameRate, props.numberOfFrames, 'animation')
+    _capturer = new Capturer(canvas, canvas.width, canvas.height, _props.frameRate, _props.numberOfFrames, 'animation')
 
     document.querySelector('#capture').addEventListener('click', e => {
-      props.frameNumber = 0
+      _props.frameNumber = 0
       _capturer.enableCapture()
       _capturer.start()
       e.preventDefault()
@@ -146,7 +146,7 @@ let sketch = new p5(s => {
 
   s.startFrame = () => {
     s.clear();
-    s.background(props.background);
+    s.background(_props.background);
   }
 
   s.endFrame = () => {

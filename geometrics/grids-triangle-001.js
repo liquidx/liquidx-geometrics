@@ -11,7 +11,7 @@ let canvas = null
 let _capturer = null
 
 // Animation
-let props = {}
+let _props = {}
 let _gui = null
 let _shiftControllers = []
 
@@ -20,18 +20,18 @@ let sketch = new p5(s => {
 
   s.draw = () => {
     s.startFrame()
-    if (props.animate) {
-      props.frameNumber += 1
+    if (_props.animate) {
+      _props.frameNumber += 1
     }
 
-    let patternWidth = (props.width - 2 * props.marginX)
-    let patternHeight = (props.height - 2 * props.marginY)
+    let patternWidth = (_props.width - 2 * _props.marginX)
+    let patternHeight = (_props.height - 2 * _props.marginY)
 
     // TODO: duplicated here and in transform.
-    let t = s.map(props.frameNumber, 0, props.numberOfFrames, 0, 1)
-    props.shiftX = 2 + s.sin(s.TWO_PI  * t)
-    props.shiftY = 1 + s.cos(s.TWO_PI * 2 * t)
-    props.shiftZ = 1 + s.sin(s.TWO_PI * 2 * t)
+    let t = s.map(_props.frameNumber, 0, _props.numberOfFrames, 0, 1)
+    _props.shiftX = 2 + s.sin(s.TWO_PI  * t)
+    _props.shiftY = 1 + s.cos(s.TWO_PI * 2 * t)
+    _props.shiftZ = 1 + s.sin(s.TWO_PI * 2 * t)
     _shiftControllers.map(o => { o.updateDisplay() })
 
     const transform = (context, cell, seq) => {
@@ -40,26 +40,26 @@ let sketch = new p5(s => {
     }
   
     squareGrid(
-      s, props,
-      props.marginX, 
-      props.marginY,
+      s, _props,
+      _props.marginX, 
+      _props.marginY,
       patternWidth,
       patternHeight,
-      props.countX,
-      props.countY,
+      _props.countX,
+      _props.countY,
       onePolyTriangleSimple,
       transform
     )
   
-    if (props.drawGrid) {
+    if (_props.drawGrid) {
       squareGridLines(s, {},
-        props.marginX, 
-        props.marginY,
+        _props.marginX, 
+        _props.marginY,
         patternWidth,
         patternHeight,
-        props.countX,
-        props.countY,
-        props.grid
+        _props.countX,
+        _props.countY,
+        _props.grid
       )
     }
     s.endFrame();
@@ -94,41 +94,41 @@ let sketch = new p5(s => {
       this.frameNumber = 0
     };
     
-    props = new Properties();
+    _props = new Properties();
   
     _gui = new dat.GUI({closed: true, autoPlace: false, width: 320})
     _gui.closed = false;
   
   
-    _gui.add(props, 'countX', 1, 32).step(1)
-    _gui.add(props, 'countY', 1, 32).step(1)
+    _gui.add(_props, 'countX', 1, 32).step(1)
+    _gui.add(_props, 'countY', 1, 32).step(1)
   
-    _gui.add(props, 'marginX', 0, 200).step(1)
-    _gui.add(props, 'marginY', 0, 200).step(1)
+    _gui.add(_props, 'marginX', 0, 200).step(1)
+    _gui.add(_props, 'marginY', 0, 200).step(1)
   
-    let xc = _gui.add(props, 'shiftX', -10, 10).step(0.01)
-    let yc = _gui.add(props, 'shiftY', -10, 10).step(0.01)
-    let zc = _gui.add(props, 'shiftZ', -10, 10).step(0.01)
+    let xc = _gui.add(_props, 'shiftX', -10, 10).step(0.01)
+    let yc = _gui.add(_props, 'shiftY', -10, 10).step(0.01)
+    let zc = _gui.add(_props, 'shiftZ', -10, 10).step(0.01)
     _shiftControllers.push(xc)
     _shiftControllers.push(yc)
     _shiftControllers.push(zc)
   
-    _gui.add(props, 'triangleType', ['tl-tr-bl', 'tm-br-bl'])
-    _gui.add(props, 'stroke')
+    _gui.add(_props, 'triangleType', ['tl-tr-bl', 'tm-br-bl'])
+    _gui.add(_props, 'stroke')
     
-    _gui.add(props, 'drawGrid')
-    _gui.addColor(props, 'grid')
+    _gui.add(_props, 'drawGrid')
+    _gui.addColor(_props, 'grid')
   
-    _gui.addColor(props, 'foreground')
-    _gui.addColor(props, 'background')
+    _gui.addColor(_props, 'foreground')
+    _gui.addColor(_props, 'background')
   
-    _gui.add(props, 'animate')
-    _gui.add(props, 'frameNumber', 0, props.numberOfFrames).step(1)
+    _gui.add(_props, 'animate')
+    _gui.add(_props, 'frameNumber', 0, _props.numberOfFrames).step(1)
   
     let sampling = _gui.addFolder('Recording')
-    sampling.add(props, 'samplesPerFrame', 1, 4).step(1);
-    sampling.add(props, 'numberOfFrames', 1, 180).step(1);
-    sampling.add(props, 'frameRate', 1, 60).step(1);
+    sampling.add(_props, 'samplesPerFrame', 1, 4).step(1);
+    sampling.add(_props, 'numberOfFrames', 1, 180).step(1);
+    sampling.add(_props, 'frameRate', 1, 60).step(1);
   
     document.querySelector('#controls').appendChild(_gui.domElement);
   }
@@ -138,10 +138,10 @@ let sketch = new p5(s => {
   s.setup = () => {
     setupProperties()
 
-    p5canvas = s.createCanvas(props.width, props.height);
+    p5canvas = s.createCanvas(_props.width, _props.height);
     p5canvas.parent("container");
     canvas = document.querySelector('#' + p5canvas.id())
-    s.frameRate(props.frameRate);
+    s.frameRate(_props.frameRate);
     
     s.pixelDensity(2);
     s.smooth(8);
@@ -151,10 +151,10 @@ let sketch = new p5(s => {
     s.noStroke();
 
 
-    _capturer = new Capturer(canvas, canvas.width, canvas.height, props.frameRate, props.numberOfFrames, 'animation')
+    _capturer = new Capturer(canvas, canvas.width, canvas.height, _props.frameRate, _props.numberOfFrames, 'animation')
 
     document.querySelector('#capture').addEventListener('click', e => {
-      props.frameNumber = 0
+      _props.frameNumber = 0
       _capturer.enableCapture()
       _capturer.start()
       e.preventDefault()
@@ -164,7 +164,7 @@ let sketch = new p5(s => {
 
   s.startFrame = () => {
     s.clear();
-    s.background(props.background);
+    s.background(_props.background);
   }
 
   s.endFrame = () => {

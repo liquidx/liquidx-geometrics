@@ -11,7 +11,7 @@ let canvas = null
 let _capturer = null
 
 // Animation
-let props = {}
+let _props = {}
 let _gui = null
 let _shiftControllers = []
 
@@ -20,12 +20,12 @@ let _shiftControllers = []
 
   s.draw = () => {
     s.startFrame()
-    if (props.animate) {
-      props.frameNumber += 1
+    if (_props.animate) {
+      _props.frameNumber += 1
     }
   
-    let patternWidth = (props.width - 2 * props.marginX)
-    let patternHeight = (props.height - 2 * props.marginY)
+    let patternWidth = (_props.width - 2 * _props.marginX)
+    let patternHeight = (_props.height - 2 * _props.marginY)
 
     const contextTransform = (context) => {
       context.t = s.map(context.frameNumber, 0, context.numberOfFrames, 0, 1)
@@ -34,30 +34,30 @@ let _shiftControllers = []
 
     squareGrid(
       // basic drawing
-      s, props,
+      s, _props,
 
       // cell information
-      props.marginX, 
-      props.marginY,
+      _props.marginX, 
+      _props.marginY,
       patternWidth,
       patternHeight,
-      props.countX,
-      props.countY,
+      _props.countX,
+      _props.countY,
 
       // drawing methods
       onePolyCircle,
       contextTransform
     )
   
-    if (props.drawGrid) {
+    if (_props.drawGrid) {
       squareGridLines(s, context,
-        props.marginX, 
-        props.marginY,
+        _props.marginX, 
+        _props.marginY,
         patternWidth,
         patternHeight,
-        props.countX,
-        props.countY,
-        props.grid
+        _props.countX,
+        _props.countY,
+        _props.grid
       )
     }
     s.endFrame();
@@ -70,20 +70,20 @@ let _shiftControllers = []
     s.push()
     s.translate(originX + cellWidth / 2, originY + cellHeight / 2)
     s.rotate(s.TWO_PI * context.t)
-    s.rotate(s.TWO_PI * props.shiftX * percentX)
-    s.rotate(s.TWO_PI * props.shiftY * percentY)
+    s.rotate(s.TWO_PI * _props.shiftX * percentX)
+    s.rotate(s.TWO_PI * _props.shiftY * percentY)
 
-    if (props.stroke) {
+    if (_props.stroke) {
       s.strokeWeight(2)
-      s.stroke(props.foreground)
+      s.stroke(_props.foreground)
       s.noFill()
     } else {
-      s.fill(props.foreground)
+      s.fill(_props.foreground)
       s.noStroke()
     }
 
     s.beginShape()
-    let radius = Math.min(cellWidth / 2, cellHeight / 2) - props.unitInset
+    let radius = Math.min(cellWidth / 2, cellHeight / 2) - _props.unitInset
     let ax = 0
     let ay = -radius
     let bx = (ax * s.cos(s.TWO_PI / 3)) - (ay * s.sin(s.TWO_PI / 3))
@@ -133,41 +133,41 @@ let _shiftControllers = []
       this.frameRate = 30
     };
     
-    props = new Properties();
+    _props = new Properties();
   
     _gui = new dat.GUI({closed: true, autoPlace: false, width: 320})
     _gui.closed = false;
   
 
-    _gui.add(props, 'countX', 1, 32).step(1)
-    _gui.add(props, 'countY', 1, 32).step(1)
+    _gui.add(_props, 'countX', 1, 32).step(1)
+    _gui.add(_props, 'countY', 1, 32).step(1)
   
-    _gui.add(props, 'marginX', 0, 200).step(1)
-    _gui.add(props, 'marginY', 0, 200).step(1)
+    _gui.add(_props, 'marginX', 0, 200).step(1)
+    _gui.add(_props, 'marginY', 0, 200).step(1)
   
-    let xc = _gui.add(props, 'shiftX', -3, 3).step(0.01)
-    let yc = _gui.add(props, 'shiftY', -3, 3).step(0.01)
-    let zc = _gui.add(props, 'shiftZ', -3, 3).step(0.01)
+    let xc = _gui.add(_props, 'shiftX', -3, 3).step(0.01)
+    let yc = _gui.add(_props, 'shiftY', -3, 3).step(0.01)
+    let zc = _gui.add(_props, 'shiftZ', -3, 3).step(0.01)
     _shiftControllers.push(xc)
     _shiftControllers.push(yc)
     _shiftControllers.push(zc)
   
-    _gui.add(props, 'unitInset', -10, 10).step(1)
+    _gui.add(_props, 'unitInset', -10, 10).step(1)
   
-    _gui.add(props, 'stroke')
+    _gui.add(_props, 'stroke')
     
-    _gui.add(props, 'drawGrid')
-    _gui.addColor(props, 'grid')
+    _gui.add(_props, 'drawGrid')
+    _gui.addColor(_props, 'grid')
   
-    _gui.addColor(props, 'foreground')
-    _gui.addColor(props, 'background')
+    _gui.addColor(_props, 'foreground')
+    _gui.addColor(_props, 'background')
   
-    _gui.add(props, 'animate')
-    _gui.add(props, 'frameNumber', 0, props.numberOfFrames).step(1)
+    _gui.add(_props, 'animate')
+    _gui.add(_props, 'frameNumber', 0, _props.numberOfFrames).step(1)
   
     let sampling = _gui.addFolder('Recording')
-    sampling.add(props, 'numberOfFrames', 1, 180).step(1);
-    sampling.add(props, 'frameRate', 1, 60).step(1);
+    sampling.add(_props, 'numberOfFrames', 1, 180).step(1);
+    sampling.add(_props, 'frameRate', 1, 60).step(1);
   
     document.querySelector('#controls').appendChild(_gui.domElement);
   }
@@ -178,10 +178,10 @@ let _shiftControllers = []
   s.setup = () => {
     setupProperties()
 
-    p5canvas = s.createCanvas(props.width, props.height);
+    p5canvas = s.createCanvas(_props.width, _props.height);
     p5canvas.parent("container");
     canvas = document.querySelector('#' + p5canvas.id())
-    s.frameRate(props.frameRate);
+    s.frameRate(_props.frameRate);
     
     s.pixelDensity(2);
     s.smooth(8);
@@ -190,10 +190,10 @@ let _shiftControllers = []
     s.blendMode(s.ADD);
     s.noStroke();
 
-    _capturer = new Capturer(canvas, canvas.width, canvas.height, props.frameRate, props.numberOfFrames, 'animation')
+    _capturer = new Capturer(canvas, canvas.width, canvas.height, _props.frameRate, _props.numberOfFrames, 'animation')
 
     document.querySelector('#capture').addEventListener('click', e => {
-      props.frameNumber = 0
+      _props.frameNumber = 0
       _capturer.enableCapture()
       _capturer.start()
       e.preventDefault()
@@ -203,7 +203,7 @@ let _shiftControllers = []
 
   s.startFrame = () => {
     s.clear();
-    s.background(props.background);
+    s.background(_props.background);
   }
 
   s.endFrame = () => {
