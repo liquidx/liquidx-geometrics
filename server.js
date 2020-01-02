@@ -13,7 +13,7 @@ app.set('views', __dirname + '/public')
 app.set('view engine', 'hbs.html')
 
 app.use(express.static('public'));
-app.use('/geo', express.static('geometrics'));
+//app.use('/geo', express.static('geometrics'));
 app.use('/examples', express.static('examples'));
 
 app.get("/geo/:name", (request, response) => {
