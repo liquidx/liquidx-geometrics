@@ -10,7 +10,7 @@ let _canvas = null
 let _capturer = null
 
 // Animation
-let _props = new Properties()
+let _props = null
 let _gui = null
 let _shiftControllers = []
 

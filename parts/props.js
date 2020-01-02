@@ -40,6 +40,24 @@ class _Properties {
         this[k] = extraProperties[k]
       }
     }
+
+    this.loadFromHash()
+  }
+
+  loadFromHash() {
+    if (window.location.hash) {
+      let params = new URLSearchParams(window.location.hash.substr(1))
+      if (params) {
+        for (const [key, value] of params.entries()) {
+          let numericValue = parseFloat(value)
+          if (numericValue !== NaN) {
+            this[key] = numericValue
+          } else {
+            this[key] = value
+          }
+        }
+      }
+    }
   }
 
   registerDat(addExtraControls)  {
