@@ -1,14 +1,14 @@
-import p5 from 'p5'
+import p5 from '../node_modules/p5/lib/p5.min.js' //import p5 from 'p5'
 import dat from 'dat.gui'
-
 import { squareGrid, squareGridLines } from '../parts/grids.js'
+import Capturer from '../parts/capturer.js'
 
 // The canvas.
 let p5canvas = null
 let canvas = null
+let _capturer = null
 
 // Animation
-let t = 0;
 let props = {}
 
 let sketch = new p5(s => {
@@ -73,7 +73,9 @@ let sketch = new p5(s => {
       this.foreground = '#ffffff'
       this.background = '#202020'
   
-      this.samplesPerFrame = 1;
+      this.animate = true
+      this.frameNumber = 0
+
       this.numberOfFrames = 120;
     };
     
@@ -92,7 +94,10 @@ let sketch = new p5(s => {
     gui.add(props, 'heightScale', 0.5, 1.5).step(0.1);
     gui.add(props, 'mutateX', -10, 10).step(0.5);
     gui.add(props, 'mutateY', -10, 10).step(0.5);
-  
+
+    gui.add(props, 'animate')
+    gui.add(props, 'frameNumber', 0, props.numberOfFrames).step(1)
+
     let sampling = gui.addFolder('Recording')
     sampling.add(props, 'samplesPerFrame', 1, 4).step(1);
     sampling.add(props, 'numberOfFrames', 1, 180).step(1);
@@ -119,17 +124,13 @@ let sketch = new p5(s => {
     s.blendMode(s.ADD);
     s.noStroke();
 
-    CAPTURER.init(canvas, 
-      canvas.width, canvas.height, 
-      props.frameRate, 
-      props.numberOfFrames, 
-      'animation')
+    _capturer = new Capturer(canvas, canvas.width, canvas.height, props.frameRate, props.numberOfFrames, 'animation')
 
     document.querySelector('#capture').addEventListener('click', e => {
-      props.frameNumber = 1
-      CAPTURER.enableCapture()
-      CAPTURER.start()
-      e.stopPropagation()
+      props.frameNumber = 0
+      _capturer.enableCapture()
+      _capturer.start()
+      e.preventDefault()
       return false;
     })
   }
@@ -140,7 +141,7 @@ let sketch = new p5(s => {
   }
 
   s.endFrame = () => {
-    CAPTURER.captureFrame(canvas);
+    _capturer.captureFrame()
   }
 })
 

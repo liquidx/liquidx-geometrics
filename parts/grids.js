@@ -1,7 +1,7 @@
 const squareGridDraw = (context, originX, originY, cellWidth, cellHeight, seqX, seqY, percentX, percentY) => {
 }
 
-const squareGrid = (s, options, originX, originY, width, height, countX, countY, drawAtGrid) => {
+const squareGrid = (s, context, originX, originY, width, height, countX, countY, drawAtGrid) => {
   let cellWidth = width / countX
   let cellHeight = height / countY
 
@@ -13,7 +13,7 @@ const squareGrid = (s, options, originX, originY, width, height, countX, countY,
     for (let y = 0; y < countY; y++) {
       drawAtGrid(
         s,
-        options,
+        context,
         originX + x * cellWidth,
         originY + y * cellHeight,
         cellWidth, 
@@ -27,7 +27,7 @@ const squareGrid = (s, options, originX, originY, width, height, countX, countY,
   }
 }
 
-const squareGridLines = (s, options, originX, originY, width, height, countX, countY, gridColor) => {
+const squareGridLines = (s, context, originX, originY, width, height, countX, countY, gridColor) => {
   let cellWidth = width / countX
   let cellHeight = height / countY
   s.stroke(gridColor)
