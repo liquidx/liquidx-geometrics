@@ -101,13 +101,11 @@ let sketch = new p5(s => {
     s.noStroke();
 
     _capturer = new Capturer(_canvas, _canvas.width, _canvas.height, _props.frameRate, _props.numberOfFrames, 'animation')
-
-    document.querySelector('#capture').addEventListener('click', e => {
+    _capturer.activateLink( document.querySelector('#capture'), () => {
       _props.frameNumber = 0
-      _capturer.enableCapture()
-      _capturer.start()
-      e.preventDefault()
-      return false;
+    })
+
+    _props.activateLink(document.querySelector('#share'), () => {
     })
   }
 

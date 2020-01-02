@@ -1,4 +1,5 @@
 import dat from 'dat.gui'
+import _ from 'lodash'
 
 const PIXEL_DENSITY = 2
 
@@ -45,6 +46,13 @@ class _Properties {
       }
     }
 
+    this._defaults = {}
+    for (let k of _.keys(this)) {
+      if (k.startsWith('_')) { continue }
+      this._defaults[k] = this[k]
+    }
+    console.log(this._defaults)
+
     this.loadFromHash()
   }
 
@@ -54,14 +62,58 @@ class _Properties {
       if (params) {
         for (const [key, value] of params.entries()) {
           let numericValue = parseFloat(value)
+          let booleanValue = (value == 'true' || value == 'false')
           if (!isNaN(numericValue)) {
             this[key] = numericValue
+          } else if (booleanValue) {
+            if (value == 'true') {
+              this[key] = true
+            } else {
+              this[key] = false
+            }
           } else {
             this[key] = value
           }
         }
       }
     }
+  }
+
+  saveToHash() {
+    let changes = {}
+    for (let k of _.keys(this)) {
+      if (k.startsWith('_')) { continue }
+      let currentValue = this[k]
+      if (this._defaults[k] != currentValue) {
+        changes[k] = currentValue
+      }
+    }
+
+    if (_.keys(changes).length > 0) {
+      let params = new URLSearchParams(changes)
+      window.location.hash = '#' + params.toString()
+    }
+  }
+
+  activateLink(elem, callback) {
+    let self = this  // binding hack
+    elem.addEventListener('click', e => {
+      if (callback) {
+        callback()
+      }
+      let h = self.saveToHash()
+      const el = document.createElement('textarea');
+      el.value = window.location;
+      el.setAttribute('readonly', '');
+      el.style.position = 'absolute';
+      el.style.left = '-9999px';
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      e.preventDefault()
+      return false;
+    })
   }
 
   registerDat(addExtraControls)  {

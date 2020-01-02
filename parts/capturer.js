@@ -14,6 +14,19 @@ class Capturer {
     this.captureDelay = 2 // dunno why there's a 2 frame delay in capturing.
   }
 
+  activateLink(elem, callback) {
+    let self = this  // binding hack
+    elem.addEventListener('click', e => {
+      if (callback) {
+        callback()
+      }
+      self.enableCapture()
+      self.start()
+      e.preventDefault()
+      return false
+    })
+  }
+
   enableCapture() {
     this.started = false
     this.stream = null
