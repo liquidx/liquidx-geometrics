@@ -11,12 +11,15 @@ let _capturer = null
 // Animation
 let props = {}
 
+// eslint-disable-next-line no-unused-vars
 let sketch = new p5(s => {
 
   s.draw = () => {
     s.startFrame()
-    props.frameNumber += 1
-    t = s.map(props.frameNumber, 0, props.numberOfFrames, 0, 1)
+
+    if (props.animate) {
+      props.frameNumber += 1
+    }
   
     let patternWidth = (props.width - 2 * props.marginX)
     let patternHeight = (props.height - 2 * props.marginY)
@@ -48,6 +51,8 @@ let sketch = new p5(s => {
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // eslint-disable-next-line no-unused-vars
   const drawOne = (s, options, originX, originY, cellWidth, cellHeight, seqX, seqY, percentX, percentY) => {
     s.push();
     s.translate(originX + cellWidth / 2, originY + cellHeight / 2);

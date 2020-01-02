@@ -13,7 +13,8 @@ let props = {}
 let _gui = null
 let _shiftControllers = []
 
-let sketch = new p5(s => {
+  // eslint-disable-next-line no-unused-vars
+  let sketch = new p5(s => {
 
   s.draw = () => {
     s.startFrame()
@@ -51,6 +52,8 @@ let sketch = new p5(s => {
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // eslint-disable-next-line no-unused-vars
   const drawOne = (s, context, originX, originY, cellWidth, cellHeight, seqX, seqY, percentX, percentY) => {
     s.push()
     s.translate(originX + cellWidth / 2, originY + cellHeight / 2)

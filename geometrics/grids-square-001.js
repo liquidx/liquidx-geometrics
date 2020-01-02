@@ -11,6 +11,7 @@ let _capturer = null
 // Animation
 let props = {}
 
+// eslint-disable-next-line no-unused-vars
 let sketch = new p5(s => {
 
   s.draw = () => {
@@ -49,6 +50,8 @@ let sketch = new p5(s => {
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // eslint-disable-next-line no-unused-vars
   const drawOne = (s, options, originX, originY, cellWidth, cellHeight, seqX, seqY, percentX, percentY) => {
     s.push();
     let squareWidth = (cellWidth - ((seqX + seqY) * options.mutateWidth)) * props.widthScale

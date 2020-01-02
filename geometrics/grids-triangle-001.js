@@ -13,41 +13,8 @@ let props = {}
 let _gui = null
 let _shiftControllers = []
 
+// eslint-disable-next-line no-unused-vars
 let sketch = new p5(s => {
-
-  const drawOne = (s, context, originX, originY, cellWidth, cellHeight, seqX, seqY, percentX, percentY) => {
-    s.push();
-    s.translate(originX, originY)
-    if (props.stroke) {
-      s.strokeWeight(2)
-      s.stroke(props.foreground)
-      s.noFill()
-    } else {
-      s.fill(props.foreground)
-      s.noStroke()
-    }
-    if (props.triangleType == 'tl-tr-bl') {
-      s.triangle(
-        seqX * props.shiftX, 0, 
-        cellWidth, seqY * props.shiftY, 
-        seqY * props.shiftZ, cellHeight)
-    } else if (props.triangleType == 'tm-br-bl') {
-      s.triangle(
-        cellWidth / 2, (seqX * props.shiftX) % (cellHeight), 
-        cellWidth, cellHeight - (seqY * props.shiftY) % cellHeight, 
-        0, cellHeight - (seqX * props.shiftZ) % cellHeight)
-    } else if (props.triangleType == 'mountain') {
-      let unitWidth = cellWidth - 2 * props.unitInset
-      let unitHeight = cellHeight - 2 * props.unitInset
-      s.quad(
-        props.unitInset + unitWidth / 3  + seqX * props.shiftX, props.unitInset,
-        props.unitInset + unitWidth * 2 / 3  + seqX * props.shiftX, props.unitInset,
-        props.unitInset + unitWidth, cellHeight - props.unitInset  - seqY * props.shiftY,
-        0, cellHeight - props.unitInset - seqY * props.shiftY
-      )
-    }
-    s.pop();
-  }
 
   s.draw = () => {
     s.startFrame()
@@ -88,6 +55,42 @@ let sketch = new p5(s => {
       )
     }
     s.endFrame();
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // eslint-disable-next-line no-unused-vars
+  const drawOne = (s, context, originX, originY, cellWidth, cellHeight, seqX, seqY, percentX, percentY) => {
+    s.push();
+    s.translate(originX, originY)
+    if (props.stroke) {
+      s.strokeWeight(2)
+      s.stroke(props.foreground)
+      s.noFill()
+    } else {
+      s.fill(props.foreground)
+      s.noStroke()
+    }
+    if (props.triangleType == 'tl-tr-bl') {
+      s.triangle(
+        seqX * props.shiftX, 0, 
+        cellWidth, seqY * props.shiftY, 
+        seqY * props.shiftZ, cellHeight)
+    } else if (props.triangleType == 'tm-br-bl') {
+      s.triangle(
+        cellWidth / 2, (seqX * props.shiftX) % (cellHeight), 
+        cellWidth, cellHeight - (seqY * props.shiftY) % cellHeight, 
+        0, cellHeight - (seqX * props.shiftZ) % cellHeight)
+    } else if (props.triangleType == 'mountain') {
+      let unitWidth = cellWidth - 2 * props.unitInset
+      s.quad(
+        props.unitInset + unitWidth / 3  + seqX * props.shiftX, props.unitInset,
+        props.unitInset + unitWidth * 2 / 3  + seqX * props.shiftX, props.unitInset,
+        props.unitInset + unitWidth, cellHeight - props.unitInset  - seqY * props.shiftY,
+        0, cellHeight - props.unitInset - seqY * props.shiftY
+      )
+    }
+    s.pop();
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////

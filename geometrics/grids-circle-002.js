@@ -12,6 +12,7 @@ let _capturer = null
 var t = 0;
 let props = {}
 
+// eslint-disable-next-line no-unused-vars
 let sketch = new p5(s => {
 
   s.draw = () => {
@@ -47,6 +48,8 @@ let sketch = new p5(s => {
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // eslint-disable-next-line no-unused-vars
   const drawOne = (s, options, originX, originY, cellWidth, cellHeight, seqX, seqY, percentX, percentY) => {
     s.push()
     s.translate(originX, originY)
