@@ -54,7 +54,7 @@ class _Properties {
       if (params) {
         for (const [key, value] of params.entries()) {
           let numericValue = parseFloat(value)
-          if (isNaN(numericValue)) {
+          if (!isNaN(numericValue)) {
             this[key] = numericValue
           } else {
             this[key] = value
