@@ -1,6 +1,6 @@
 import p5 from '../node_modules/p5/lib/p5.min.js' //import p5 from 'p5'
-import dat from 'dat.gui'
 import Capturer from '../parts/capturer.js'
+import { Properties } from '../parts/props.js'
 
 import { squareGrid, squareGridLines } from '../parts/grids.js'
 import { onePolyConcentricCircle } from '../parts/polys.js'
@@ -60,67 +60,26 @@ let sketch = new p5(s => {
 
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
-  const setupProperties = () => {
-    var Properties = function() {
-      this.width = 480
-      this.height = 360
-      this.marginX = 68
-      this.marginY = 8
-  
-      this.countX = 2
-      this.countY = 2
-  
-      this.spacing = 16
-      this.radiusMultiplier = 1.0
-      this.initialStrokes = 0
-      this.strokesMultiplier = 1
-  
-      this.inset = 8
-      this.stroke = true
-      this.drawGrid = false
-      this.foreground = '#a9a9a9'
-      this.background = '#202020'
-      this.grid = '#990000'
-  
-      this.animate = false
-      this.frameNumber = 0
 
-      this.numberOfFrames = 120
-      this.frameRate = 30
-    };
-    
-    _props = new Properties();
-  
-    let gui = new dat.GUI({closed: true, autoPlace: false, width: 320})
-    gui.closed = false
-    gui.remember(_props)
-  
-    gui.add(_props, 'countX', 1, 16).step(1);
-    gui.add(_props, 'countY', 1, 16).step(1);
-  
-    gui.add(_props, 'spacing', 0, 64).step(1);
-    gui.add(_props, 'radiusMultiplier', 0, 4);
-    gui.add(_props, 'initialStrokes', 0, 10).step(1)
-    gui.add(_props, 'strokesMultiplier', 0, 10).step(1)
-  
-    gui.add(_props, 'marginX',  0, 200).step(1);
-    gui.add(_props, 'marginY',  0, 200).step(1);
-  
-    gui.add(_props, 'stroke')
-    
-    gui.add(_props, 'drawGrid')
-    gui.addColor(_props, 'grid')
-  
-    gui.addColor(_props, 'foreground')
-    gui.addColor(_props, 'background')
-  
-    gui.add(_props, 'animate')
-    gui.add(_props, 'frameNumber', 0, _props.numberOfFrames).step(1)
-  
-    let sampling = gui.addFolder('Recording')
-    sampling.add(_props, 'numberOfFrames', 1, 180).step(1);
-    sampling.add(_props, 'frameRate', 1, 60).step(1);
-  
+  const setupProperties = () => {
+    _props = new Properties({
+      countX: 2,
+      countY: 2,
+      animate: false,
+      stroke: true,
+
+      spacing: 10,
+      radiusMultiplier: 1.0,
+      initialStrokes: 1,
+      strokesMultiplier: 1
+    })
+
+    let gui = _props.registerDat((props, gui) => {
+      gui.add(_props, 'spacing', 0, 64).step(1);
+      gui.add(_props, 'radiusMultiplier', 0, 4);
+      gui.add(_props, 'initialStrokes', 0, 10).step(1)
+      gui.add(_props, 'strokesMultiplier', 0, 10).step(1)
+    })
     document.querySelector('#controls').appendChild(gui.domElement);
   }
 
