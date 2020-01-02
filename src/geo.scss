@@ -42,13 +42,15 @@ main {
     overflow: hidden;
     display: flex;
     flex-direction: row;
-    justify-content: center;
-  
+    justify-content: center;  
   }
 }
 
 footer {
-  overflow-x: hidden;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;  
 }
 
 a#capture {
