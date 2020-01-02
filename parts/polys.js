@@ -43,6 +43,9 @@ const _onePolyTriangleSimple = (s, context, cell, seq, contextTransform) => {
     cellContext = contextTransform(_.clone(cellContext), cell, seq)
   }
 
+  let shiftX = (cellContext.cellVaryX || 0) + cellContext.timeShiftX
+  let shiftY = (cellContext.cellVaryY || 0) + cellContext.timeShiftY
+
   s.push();
     s.translate(cell.x, cell.y)
     if (cellContext.stroke) {
@@ -55,14 +58,14 @@ const _onePolyTriangleSimple = (s, context, cell, seq, contextTransform) => {
     }
     if (cellContext.triangleType == 'tl-tr-bl') {
       s.triangle(
-        seq.x * cellContext.shiftX, 0, 
-        cell.w, seq.y * cellContext.shiftY, 
-        seq.y * cellContext.shiftZ, cell.h)
+        seq.x * shiftX, cellContext.cellInset, 
+        cell.w - cellContext.cellInset, seq.y * shiftY, 
+        seq.y * shiftY, cell.h - cellContext.cellInset)
     } else if (cellContext.triangleType == 'tm-br-bl') {
       s.triangle(
-        cell.w / 2, (seq.x * cellContext.shiftX) % (cell.h), 
-        cell.w, cell.h - (seq.y * cellContext.shiftY) % cell.h, 
-        0, cell.h - (seq.x * cellContext.shiftZ) % cell.h)
+        cell.w / 2, (seq.x * shiftX) % (cell.h - cellContext.cellInset), 
+        cell.w - cellContext.cellInset, cell.h - (seq.y * shiftY) % (cell.h - cellContext.cellInset), 
+        cellContext.cellInset, cell.h - (seq.x * shiftX) % (cell.h - cellContext.cellInset))
     }
   s.pop();
 }
@@ -76,8 +79,8 @@ const _onePolyTriangleEqualiteral = (s, context, cell, seq, contextTransform) =>
   s.push()
   s.translate(cell.x + cell.w / 2, cell.y + cell.h / 2)
   s.rotate(s.TWO_PI * cellContext.t)
-  s.rotate(s.TWO_PI * cellContext.shiftX * seq.percentX)
-  s.rotate(s.TWO_PI * cellContext.shiftY * seq.percentY)
+  s.rotate(s.TWO_PI * cellContext.cellVaryX * seq.percentX)
+  s.rotate(s.TWO_PI * cellContext.cellVaryY * seq.percentY)
 
   if (cellContext.stroke) {
     s.strokeWeight(2)
@@ -89,7 +92,7 @@ const _onePolyTriangleEqualiteral = (s, context, cell, seq, contextTransform) =>
   }
 
   s.beginShape()
-  let radius = Math.min(cell.w / 2, cell.h / 2) - cellContext.unitInset
+  let radius = Math.min(cell.w / 2, cell.h / 2) - cellContext.cellInset
   let ax = 0
   let ay = -radius
   let bx = (ax * s.cos(s.TWO_PI / 3)) - (ay * s.sin(s.TWO_PI / 3))

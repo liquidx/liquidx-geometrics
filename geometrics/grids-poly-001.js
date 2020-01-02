@@ -1,9 +1,10 @@
 import p5 from '../node_modules/p5/lib/p5.min.js' //import p5 from 'p5'
-import dat from 'dat.gui'
 import _ from 'lodash'
+import Capturer from '../parts/capturer.js'
+import { Properties } from '../parts/props.js'
+
 import { squareGrid, squareGridLines } from '../parts/grids.js'
 import { onePolyCircle, onePolyConcentricCircle } from '../parts/polys.js'
-import Capturer from '../parts/capturer.js'
 
 // The canvas.
 let _p5canvas = null
@@ -12,8 +13,6 @@ let _capturer = null
 
 // Animation
 let _props = {}
-let _gui = null
-let _shiftControllers = []
 
   // eslint-disable-next-line no-unused-vars
   let sketch = new p5(s => {
@@ -70,8 +69,8 @@ let _shiftControllers = []
     s.push()
     s.translate(originX + cellWidth / 2, originY + cellHeight / 2)
     s.rotate(s.TWO_PI * context.t)
-    s.rotate(s.TWO_PI * _props.shiftX * percentX)
-    s.rotate(s.TWO_PI * _props.shiftY * percentY)
+    s.rotate(s.TWO_PI * context.cellVaryX * percentX)
+    s.rotate(s.TWO_PI * context.cellVaryY * percentY)
 
     if (_props.stroke) {
       s.strokeWeight(2)
@@ -83,7 +82,7 @@ let _shiftControllers = []
     }
 
     s.beginShape()
-    let radius = Math.min(cellWidth / 2, cellHeight / 2) - _props.unitInset
+    let radius = Math.min(cellWidth / 2, cellHeight / 2) - context.cellInset
     let ax = 0
     let ay = -radius
     let bx = (ax * s.cos(s.TWO_PI / 3)) - (ay * s.sin(s.TWO_PI / 3))
@@ -100,78 +99,10 @@ let _shiftControllers = []
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
   const setupProperties = () => {
-    var Properties = function() {
-      this.width = 640
-      this.height = 360
-      this.marginX = 148
-      this.marginY = 8
-  
-      // this.width = 360
-      // this.height = 360
-      // this.marginX = 8
-      // this.marginY = 8    
-  
-      this.countX = 10
-      this.countY = 10
-  
-      this.shiftX = 0.1
-      this.shiftY = 0.2
-      this.shiftZ = 0
-      this.unitInset = -1
-  
-      this.stroke = false
-      this.foreground = '#a9a9a9'
-      this.background = '#202020'
-
-      this.drawGrid = false
-      this.grid = '#990000'
-
-      this.animate = true
-      this.frameNumber = 0
-
-      this.numberOfFrames = 120
-      this.frameRate = 30
-    };
-    
-    _props = new Properties();
-  
-    _gui = new dat.GUI({closed: true, autoPlace: false, width: 320})
-    _gui.closed = false;
-  
-
-    _gui.add(_props, 'countX', 1, 32).step(1)
-    _gui.add(_props, 'countY', 1, 32).step(1)
-  
-    _gui.add(_props, 'marginX', 0, 200).step(1)
-    _gui.add(_props, 'marginY', 0, 200).step(1)
-  
-    let xc = _gui.add(_props, 'shiftX', -3, 3).step(0.01)
-    let yc = _gui.add(_props, 'shiftY', -3, 3).step(0.01)
-    let zc = _gui.add(_props, 'shiftZ', -3, 3).step(0.01)
-    _shiftControllers.push(xc)
-    _shiftControllers.push(yc)
-    _shiftControllers.push(zc)
-  
-    _gui.add(_props, 'unitInset', -10, 10).step(1)
-  
-    _gui.add(_props, 'stroke')
-    
-    _gui.add(_props, 'drawGrid')
-    _gui.addColor(_props, 'grid')
-  
-    _gui.addColor(_props, 'foreground')
-    _gui.addColor(_props, 'background')
-  
-    _gui.add(_props, 'animate')
-    _gui.add(_props, 'frameNumber', 0, _props.numberOfFrames).step(1)
-  
-    let sampling = _gui.addFolder('Recording')
-    sampling.add(_props, 'numberOfFrames', 1, 180).step(1);
-    sampling.add(_props, 'frameRate', 1, 60).step(1);
-  
-    document.querySelector('#controls').appendChild(_gui.domElement);
+    _props = new Properties()
+    let gui = _props.registerDat()
+    document.querySelector('#controls').appendChild(gui.domElement);
   }
-
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
 

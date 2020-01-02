@@ -61,10 +61,14 @@ let _shiftControllers = []
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
   const setupProperties = () => {
-    let gui = _props.registerDat()
+    _props = new Properties({
+      cellVaryX: 0.1,
+      cellVaryY: 0.2
+    }) 
+    let gui = _props.registerDat((props, gui) => {
+    })
     document.querySelector('#controls').appendChild(gui.domElement);
   }
-
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -28,8 +28,8 @@ let sketch = new p5(s => {
     let patternHeight = (_props.height - 2 * _props.marginY)
 
     const transform = (context, cell, seq) => {
-      context.cellWidthTransform = seq.x * context.mutateX
-      context.cellHeightTransform = seq.y * context.mutateY
+      context.cellWidthTransform = seq.x * context.cellVaryX
+      context.cellHeightTransform = seq.y * context.cellVaryY
       return context
     }
 
@@ -65,16 +65,15 @@ let sketch = new p5(s => {
   //////////////////////////////////////////////////////////////////////////////////////////////////
   const setupProperties = () => {
     _props = new Properties({
+      cellVaryX: -3,
+      cellVaryY: -3,
+
       scaleWidth: 0.8,
       scaleHeight: 0.8,
-      mutateX: -3,
-      mutateY: -3
     })
     let gui = _props.registerDat((props, gui) => {
       gui.add(props, 'scaleWidth', 0.5, 1.5).step(0.1);
       gui.add(props, 'scaleHeight', 0.5, 1.5).step(0.1);
-      gui.add(props, 'mutateX', -10, 10).step(0.5);
-      gui.add(props, 'mutateY', -10, 10).step(0.5);  
     })
     document.querySelector('#controls').appendChild(gui.domElement);
   }

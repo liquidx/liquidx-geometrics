@@ -1,7 +1,9 @@
 import p5 from '../node_modules/p5/lib/p5.min.js' //import p5 from 'p5'
-import dat from 'dat.gui'
-import { squareGrid, squareGridLines } from '../parts/grids.js'
+
+import { Properties } from '../parts/props.js'
 import Capturer from '../parts/capturer.js'
+
+import { squareGrid, squareGridLines } from '../parts/grids.js'
 import {onePolySquare } from '../parts/polys.js'
 
 // The canvas.
@@ -62,57 +64,20 @@ let sketch = new p5(s => {
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
   const setupProperties = () => {
-    var Properties = function() {
-      this.width = 480
-      this.height = 360
-  
-      this.count = 10;
-      this.scaleWidth = 0.8
-  
-      this.marginX = 68
-      this.marginY = 8
-  
-      this.animatedScaleWidth = 1
-      this.shiftX = 0
-      this.shiftY = 0
-  
-      this.corner = 4
-      this.foreground = '#a9a9a9'
-      this.background = '#202020'
+    _props = new Properties({
+      count: 10,
+      animatedScaleWidth: 1,
+      scaleWidth: 0.8,
+      corner: 4
+    })
 
-      this.animate = true
-      this.frameNumber = 0
-  
-      this.numberOfFrames = 120
-      this.frameRate = 30
-    };
-    
-    _props = new Properties();
-  
-    let gui = new dat.GUI({closed: true, autoPlace: false, width: 320})
-    gui.closed = false;
-  
-    gui.add(_props, 'count', 1, 16).step(1);
-    gui.add(_props, 'scaleWidth', 0.5, 1.5).step(0.05);
-  
-    gui.add(_props, 'animatedScaleWidth', -10, 10).step(0.5);
-    gui.add(_props, 'shiftX', -10, 10).step(1);
-    gui.add(_props, 'shiftY', -10, 10).step(1);
-  
-    gui.add(_props, 'marginX',  0, 200).step(1);
-    gui.add(_props, 'marginY',  0, 200).step(1);
-  
-    gui.add(_props, 'corner', 0, 10).step(0.5);
-    gui.addColor(_props, 'foreground')
-    gui.addColor(_props, 'background')
+    let gui = _props.registerDat((props, gui) => {
+      gui.add(_props, 'count', 1, 16).step(1);
+      gui.add(_props, 'scaleWidth', 0.5, 1.5).step(0.05);    
+      gui.add(_props, 'animatedScaleWidth', -10, 10).step(0.5);
+      gui.add(_props, 'corner', 0, 10).step(0.5);
 
-    gui.add(_props, 'animate')
-    gui.add(_props, 'frameNumber', 0, _props.numberOfFrames).step(1)
-  
-    let sampling = gui.addFolder('Recording')
-    sampling.add(_props, 'numberOfFrames', 1, 180).step(1);
-    sampling.add(_props, 'frameRate', 1, 60).step(1);
-  
+    })
     document.querySelector('#controls').appendChild(gui.domElement);
   }
 

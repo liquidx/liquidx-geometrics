@@ -1,8 +1,10 @@
 /* eslint-disable no-undef */
 import p5 from '../node_modules/p5/lib/p5.min.js' //import p5 from 'p5'
-import dat from 'dat.gui'
-import { squareGrid, squareGridLines } from '../parts/grids.js'
+
+import { Properties } from '../parts/props.js'
 import Capturer from '../parts/capturer.js'
+
+import { squareGrid, squareGridLines } from '../parts/grids.js'
 
 
 // The canvas.
@@ -72,12 +74,12 @@ let sketch = new p5(s => {
       s.noStroke()
     }
      if (cellContext.quad == 'mountain') {
-      let unitWidth = cell.w - 2 * cellContext.unitInset
+      let unitWidth = cell.w - 2 * cellContext.cellInset
       s.quad(
-        cellContext.unitInset + unitWidth / 3  + seq.percentX * cellContext.shiftX, cellContext.unitInset,
-        cellContext.unitInset + unitWidth * 2 / 3  + seq.percentY * cellContext.shiftX, cellContext.unitInset,
-        cellContext.unitInset + unitWidth, cell.h - cellContext.unitInset  - seq.y * cellContext.shiftY,
-        0, cell.h - cellContext.unitInset - seq.y * cellContext.shiftY
+        cellContext.cellInset + unitWidth / 3  + seq.percentX * cellContext.shiftX, cellContext.cellInset,
+        cellContext.cellInset + unitWidth * 2 / 3  + seq.percentY * cellContext.shiftX, cellContext.cellInset,
+        cellContext.cellInset + unitWidth, cell.h - cellContext.cellInset  - seq.y * cellContext.shiftY,
+        0, cell.h - cellContext.cellInset - seq.y * cellContext.shiftY
       )
     }
     s.pop();
@@ -85,75 +87,20 @@ let sketch = new p5(s => {
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
   const setupProperties = () => {
-    var Properties = function() {
-      this.width = 480
-      this.height = 360
-      this.marginX = 68
-      this.marginY = 8
-  
-      this.countX = 9
-      this.countY = 9
-  
-      this.magX = 5
-  
-      this.shiftX = 0
-      this.shiftY = 0
-      this.shiftZ = 0
-      this.unitInset = 2
-  
-      this.quad = 'mountain'
-      this.stroke = false
-      this.drawGrid = false
-      this.foreground = '#a9a9a9'
-      this.background = '#202020'
-      this.grid = '#990000'
-  
-      this.animate = true
-      this.frameNumber = 0
+    _props = new Properties({
+      countX: 9,
+      countY: 9,
 
-      this.numberOfFrames = 120
-      this.frameRate = 30
-    };
-    
-    _props = new Properties();
-  
-    let gui = new dat.GUI({closed: true, autoPlace: false, width: 320})
-    gui.closed = false;
-  
-  
-    gui.add(_props, 'countX', 1, 32).step(1)
-    gui.add(_props, 'countY', 1, 32).step(1)
-  
-    gui.add(_props, 'marginX', 0, 200).step(1)
-    gui.add(_props, 'marginY', 0, 200).step(1)
-  
-    gui.add(_props, 'magX', 0, 10).step(1)
-  
-    let xc = gui.add(_props, 'shiftX', -10, 10).step(1)
-    let yc = gui.add(_props, 'shiftY', -10, 10).step(1)
-    let zc = gui.add(_props, 'shiftZ', -10, 10).step(1)
-    _shiftControllers.push(xc)
-    _shiftControllers.push(yc)
-    _shiftControllers.push(zc)
-  
-    gui.add(_props, 'unitInset', 0, 10).step(1)
-  
-    gui.add(_props, 'quad', ['mountain'])
-    gui.add(_props, 'stroke')
-    
-    gui.add(_props, 'drawGrid')
-    gui.addColor(_props, 'grid')
-  
-    gui.addColor(_props, 'foreground')
-    gui.addColor(_props, 'background')
-  
-    gui.add(_props, 'animate')
-    gui.add(_props, 'frameNumber', 0, _props.numberOfFrames).step(1)
-  
-    let sampling = gui.addFolder('Recording')
-    sampling.add(_props, 'numberOfFrames', 1, 180).step(1);
-    sampling.add(_props, 'frameRate', 1, 60).step(1);
-  
+      magX: 5,
+      cellInset: 2,
+      quad: 'mountain'
+    })
+
+    let gui = _props.registerDat((props, gui) => {
+      gui.add(_props, 'magX', 0, 10).step(1)
+      gui.add(_props, 'quad', ['mountain'])
+      gui.add(_props, 'cellInset', 0, 10).step(1)
+    })
     document.querySelector('#controls').appendChild(gui.domElement);
   }
 
