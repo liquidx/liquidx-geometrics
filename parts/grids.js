@@ -1,31 +1,35 @@
 /* eslint-disable no-unused-vars */
 
-const squareGridDraw = (context, originX, originY, cellWidth, cellHeight, seqX, seqY, percentX, percentY) => {
+const _squareGridTranasform = (context, seqX, seqY, percentX, percentY) => {
 }
 
-const squareGrid = (s, context, originX, originY, width, height, countX, countY, drawAtGrid) => {
+const _squareGridDraw = (s, context, cell, seq, contextTransform) => {
+}
+
+const _squareGrid = (s, context, originX, originY, width, height, countX, countY, drawCell, contextTransform) => {
   let cellWidth = width / countX
   let cellHeight = height / countY
 
   for (let x = 0; x < countX; x++) {
     for (let y = 0; y < countY; y++) {
-      drawAtGrid(
-        s,
-        context,
-        originX + x * cellWidth,
-        originY + y * cellHeight,
-        cellWidth, 
-        cellHeight,
-        x,
-        y,
-        x / countX,
-        y / countY
-      )
+      let cell = {
+        x: originX + x * cellWidth,
+        y: originY + y * cellHeight,
+        w: cellWidth,
+        h: cellHeight
+      }
+      let seq = {
+        x: x,
+        y: y,
+        percentX: x / countX,
+        percentY: y / countY
+      }
+      drawCell(s, context, cell, seq, contextTransform)
     }
   }
 }
 
-const squareGridLines = (s, context, originX, originY, width, height, countX, countY, gridColor) => {
+const _squareGridLines = (s, context, originX, originY, width, height, countX, countY, gridColor) => {
   let cellWidth = width / countX
   let cellHeight = height / countY
   s.stroke(gridColor)
@@ -46,7 +50,5 @@ const squareGridLines = (s, context, originX, originY, width, height, countX, co
   }    
 }
 
-const _squareGrid = squareGrid
 export { _squareGrid as squareGrid }
-const _squareGridLines = squareGridLines
 export { _squareGridLines as squareGridLines }

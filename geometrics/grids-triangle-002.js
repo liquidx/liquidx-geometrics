@@ -1,7 +1,8 @@
 import p5 from '../node_modules/p5/lib/p5.min.js' //import p5 from 'p5'
 import dat from 'dat.gui'
-import { squareGrid, squareGridLines } from '../parts/grids.js'
 import Capturer from '../parts/capturer.js'
+import { squareGrid, squareGridLines } from '../parts/grids.js'
+import { onePolyTriangleEqualiteral } from '../parts/polys.js'
 
 // The canvas.
 let p5canvas = null
@@ -22,19 +23,26 @@ let _shiftControllers = []
       props.frameNumber += 1
     }
 
-    let t = s.map(props.frameNumber, 0, props.numberOfFrames, 0, 1)
-  
     let patternWidth = (props.width - 2 * props.marginX)
     let patternHeight = (props.height - 2 * props.marginY)
 
-    squareGrid(s, {t: t},
+    const transform = (context, cell, seq) => {
+      context.t = s.map(context.frameNumber, 0, context.numberOfFrames, 0, 1)
+      return context
+    }
+
+    squareGrid(
+      s, props,
+
       props.marginX, 
       props.marginY,
       patternWidth,
       patternHeight,
       props.countX,
       props.countY,
-      drawOne
+
+      onePolyTriangleEqualiteral,
+      transform
     )
   
     if (props.drawGrid) {
@@ -49,41 +57,6 @@ let _shiftControllers = []
       )
     }
     s.endFrame();
-  }
-
-  //////////////////////////////////////////////////////////////////////////////////////////////////
-
-  // eslint-disable-next-line no-unused-vars
-  const drawOne = (s, context, originX, originY, cellWidth, cellHeight, seqX, seqY, percentX, percentY) => {
-    s.push()
-    s.translate(originX + cellWidth / 2, originY + cellHeight / 2)
-    s.rotate(s.TWO_PI * context.t)
-    s.rotate(s.TWO_PI * props.shiftX * percentX)
-    s.rotate(s.TWO_PI * props.shiftY * percentY)
-
-    if (props.stroke) {
-      s.strokeWeight(2)
-      s.stroke(props.foreground)
-      s.noFill()
-    } else {
-      s.fill(props.foreground)
-      s.noStroke()
-    }
-
-    s.beginShape()
-    let radius = Math.min(cellWidth / 2, cellHeight / 2) - props.unitInset
-    let ax = 0
-    let ay = -radius
-    let bx = (ax * s.cos(s.TWO_PI / 3)) - (ay * s.sin(s.TWO_PI / 3))
-    let by = (ax * s.sin(s.TWO_PI / 3)) + (ay * s.cos(s.TWO_PI / 3))
-    let cx = (ax * s.cos(s.TWO_PI * 2 / 3)) - (ay * s.sin(s.TWO_PI * 2 / 3))
-    let cy = (ax * s.sin(s.TWO_PI * 2 / 3)) + (ay * s.cos(s.TWO_PI * 2 / 3))
-    s.vertex(ax, ay)
-    s.vertex(bx, by)
-    s.vertex(cx, cy)
-    s.endShape(s.CLOSE)
-    
-    s.pop()
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////

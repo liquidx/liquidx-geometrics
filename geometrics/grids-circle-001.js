@@ -1,6 +1,8 @@
 import p5 from '../node_modules/p5/lib/p5.min.js' //import p5 from 'p5'
 import dat from 'dat.gui'
 import { squareGrid, squareGridLines } from '../parts/grids.js'
+import { onePolyCircle } from '../parts/polys.js'
+
 import Capturer from '../parts/capturer.js'
 
 // The canvas.
@@ -24,14 +26,21 @@ let sketch = new p5(s => {
     let patternWidth = (props.width - 2 * props.marginX)
     let patternHeight = (props.height - 2 * props.marginY)
 
-    squareGrid(s, {},
+    const transform = (context, cell, seq) => {
+      context.cellWidthTransform = seq.x * context.mutateX
+      context.cellHeightTransform = seq.y * context.mutateY
+      return context
+    }
+
+    squareGrid(s, props,
       props.marginX, 
       props.marginY,
       patternWidth,
       patternHeight,
       props.countX,
       props.countY,
-      drawOne
+      onePolyCircle,
+      transform
     )
   
     if (props.drawGrid) {
@@ -51,17 +60,6 @@ let sketch = new p5(s => {
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
-
-  // eslint-disable-next-line no-unused-vars
-  const drawOne = (s, options, originX, originY, cellWidth, cellHeight, seqX, seqY, percentX, percentY) => {
-    s.push();
-    s.translate(originX + cellWidth / 2, originY + cellHeight / 2);
-    s.fill(props.foreground);
-    s.ellipse(0, 0, cellWidth * props.widthScale - (seqX * props.mutateX), cellHeight * props.heightScale - (seqY * props.mutateY));
-    s.pop();
-  }
-
-  //////////////////////////////////////////////////////////////////////////////////////////////////
   const setupProperties = () => {
     var Properties = function() {
       this.width = 480
@@ -71,10 +69,10 @@ let sketch = new p5(s => {
   
       this.countX = 8;
       this.countY = 8;
-      this.widthScale = 0.95;
-      this.heightScale = 0.95;
-      this.mutateX = 4
-      this.mutateY = 5
+      this.scaleWidth = 0.8;
+      this.scaleHeight = 0.8;
+      this.mutateX = -3
+      this.mutateY = -3
       this.foreground = '#ffffff'
       this.background = '#202020'
   
@@ -95,8 +93,8 @@ let sketch = new p5(s => {
     gui.add(props, 'countX', 1, 16).step(1);
     gui.add(props, 'countY', 1, 16).step(1);
   
-    gui.add(props, 'widthScale', 0.5, 1.5).step(0.1);
-    gui.add(props, 'heightScale', 0.5, 1.5).step(0.1);
+    gui.add(props, 'scaleWidth', 0.5, 1.5).step(0.1);
+    gui.add(props, 'scaleHeight', 0.5, 1.5).step(0.1);
     gui.add(props, 'mutateX', -10, 10).step(0.5);
     gui.add(props, 'mutateY', -10, 10).step(0.5);
 
@@ -104,7 +102,6 @@ let sketch = new p5(s => {
     gui.add(props, 'frameNumber', 0, props.numberOfFrames).step(1)
 
     let sampling = gui.addFolder('Recording')
-    sampling.add(props, 'samplesPerFrame', 1, 4).step(1);
     sampling.add(props, 'numberOfFrames', 1, 180).step(1);
   
     document.querySelector('#controls').appendChild(gui.domElement);

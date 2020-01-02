@@ -1,7 +1,9 @@
 import p5 from '../node_modules/p5/lib/p5.min.js' //import p5 from 'p5'
 import dat from 'dat.gui'
-import { squareGrid, squareGridLines } from '../parts/grids.js'
 import Capturer from '../parts/capturer.js'
+
+import { squareGrid, squareGridLines } from '../parts/grids.js'
+import { onePolyConcentricCircle } from '../parts/polys.js'
 
 // The canvas.
 let p5canvas = null
@@ -9,7 +11,6 @@ let canvas = null
 let _capturer = null
 
 // Animation
-var t = 0;
 let props = {}
 
 // eslint-disable-next-line no-unused-vars
@@ -18,19 +19,29 @@ let sketch = new p5(s => {
   s.draw = () => {
     s.startFrame()
     props.frameNumber += 1
-    t = s.map(props.frameNumber, 0, props.numberOfFrames, 0, 1)
   
     let patternWidth = (props.width - 2 * props.marginX)
     let patternHeight = (props.height - 2 * props.marginY)
 
-    squareGrid(s, {},
+    const transform = (context, cell, seq) => {
+      context.t = s.map(context.frameNumber, 0, context.numberOfFrames, 0, 1)
+      context.strokeCount = (seq.y * context.countX + seq.x) * context.strokesMultiplier + 1 + context.initialStrokes
+      context.circleRadius = ((Math.min(cell.w, cell.h) - context.spacing) / 2) * context.radiusMultiplier
+      return context
+    }
+
+    squareGrid(
+      s, props,
+
       props.marginX, 
       props.marginY,
       patternWidth,
       patternHeight,
       props.countX,
       props.countY,
-      drawOne
+
+      onePolyConcentricCircle,
+      transform
     )
   
     if (props.drawGrid) {
@@ -47,40 +58,6 @@ let sketch = new p5(s => {
     s.endFrame();
   }
 
-  //////////////////////////////////////////////////////////////////////////////////////////////////
-
-  // eslint-disable-next-line no-unused-vars
-  const drawOne = (s, options, originX, originY, cellWidth, cellHeight, seqX, seqY, percentX, percentY) => {
-    s.push()
-    s.translate(originX, originY)
-  
-    let strokeCount =  (seqY * props.countX + seqX) * props.strokesMultiplier + 1 + props.initialStrokes
-    let circleRadius = ((Math.min(cellWidth, cellHeight) - props.spacing) / 2) * props.radiusMultiplier
-    let ringRadiusIncrement = circleRadius / strokeCount / 2
-    let strokeWidth = circleRadius / (strokeCount) / 2
-  
-    if (props.stroke) {
-      s.strokeWeight(strokeWidth)
-      s.stroke(props.foreground)
-      s.noFill()
-    } else {
-      s.fill(props.foreground)
-      s.noStroke()
-    }
-  
-    let radiusShift = 0
-    if (props.animate) {
-      radiusShift = (s.sin(s.TWO_PI * t) + 1) * -(ringRadiusIncrement)
-    }
-  
-    for (let i = 1; i <= strokeCount; i++) {
-      // Strokes are outer strokes, to make circles appear the same size, subtract
-      // the stroke width from the radius to use.
-      s.circle(cellWidth / 2,  cellWidth / 2, 
-        radiusShift + ringRadiusIncrement * (i * 4) - (strokeWidth))
-    }
-    s.pop();
-  }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
   const setupProperties = () => {

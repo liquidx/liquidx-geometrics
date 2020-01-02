@@ -34,7 +34,8 @@ let sketch = new p5(s => {
       _shiftControllers.map(o => { o.updateDisplay() })
     }
 
-    squareGrid(s, {},
+    squareGrid(
+      s, props,
       props.marginX, 
       props.marginY,
       patternWidth,
@@ -59,24 +60,24 @@ let sketch = new p5(s => {
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
-  const drawOne = (s, options, originX, originY, cellWidth, cellHeight, seqX, seqY, percentX, percentY) => {
+  const drawOne = (s, cellContext, cell, seq) => {
     s.push();
-    s.translate(originX, originY)
-    if (props.stroke) {
+    s.translate(cell.x, cell.y)
+    if (cellContext.stroke) {
       s.strokeWeight(2)
-      s.stroke(props.foreground)
+      s.stroke(cellContext.foreground)
       s.noFill()
     } else {
-      s.fill(props.foreground)
+      s.fill(cellContext.foreground)
       s.noStroke()
     }
-     if (props.quad == 'mountain') {
-      let unitWidth = cellWidth - 2 * props.unitInset
+     if (cellContext.quad == 'mountain') {
+      let unitWidth = cell.w - 2 * cellContext.unitInset
       s.quad(
-        props.unitInset + unitWidth / 3  + percentX * props.shiftX, props.unitInset,
-        props.unitInset + unitWidth * 2 / 3  + percentY * props.shiftX, props.unitInset,
-        props.unitInset + unitWidth, cellHeight - props.unitInset  - seqY * props.shiftY,
-        0, cellHeight - props.unitInset - seqY * props.shiftY
+        cellContext.unitInset + unitWidth / 3  + seq.percentX * cellContext.shiftX, cellContext.unitInset,
+        cellContext.unitInset + unitWidth * 2 / 3  + seq.percentY * cellContext.shiftX, cellContext.unitInset,
+        cellContext.unitInset + unitWidth, cell.h - cellContext.unitInset  - seq.y * cellContext.shiftY,
+        0, cell.h - cellContext.unitInset - seq.y * cellContext.shiftY
       )
     }
     s.pop();

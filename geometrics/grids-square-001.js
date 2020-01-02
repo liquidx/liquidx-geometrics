@@ -2,6 +2,7 @@ import p5 from '../node_modules/p5/lib/p5.min.js' //import p5 from 'p5'
 import dat from 'dat.gui'
 import { squareGrid, squareGridLines } from '../parts/grids.js'
 import Capturer from '../parts/capturer.js'
+import {onePolySquare } from '../parts/polys.js'
 
 // The canvas.
 let p5canvas = null
@@ -19,24 +20,34 @@ let sketch = new p5(s => {
     if (props.animate) {
       props.frameNumber += 1
     }
-    let t = s.map(props.frameNumber, 0, props.numberOfFrames, 0, 1)
   
     let patternWidth = (props.width - 2 * props.marginX)
     let patternHeight = (props.height - 2 * props.marginY)
-    let mutateWidth = props.mutateWidth + s.sin(s.TWO_PI * t) * 0.5
 
-    squareGrid(s, {mutateWidth: mutateWidth},
+    const transform = (context, cell, seq) => {
+      let t = s.map(context.frameNumber, 0, context.numberOfFrames, 0, 1)
+      let timeBasedWidthScale = context.animatedScaleWidth + s.sin(s.TWO_PI * t) * 0.5
+      context.cellWidth = (cell.w - ((seq.x + seq.y) * timeBasedWidthScale)) * context.scaleWidth
+      return context
+    }
+
+    squareGrid(
+      s, props,
+
       props.marginX, 
       props.marginY,
       patternWidth,
       patternHeight,
       props.count,
       props.count,
-      drawOne
+
+      onePolySquare,
+      transform
     )
   
     if (props.drawGrid) {
-      squareGridLines(s, {},
+      squareGridLines(
+        s, props,
         props.marginX, 
         props.marginY,
         patternWidth,
@@ -50,31 +61,18 @@ let sketch = new p5(s => {
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
-
-  // eslint-disable-next-line no-unused-vars
-  const drawOne = (s, options, originX, originY, cellWidth, cellHeight, seqX, seqY, percentX, percentY) => {
-    s.push();
-    let squareWidth = (cellWidth - ((seqX + seqY) * options.mutateWidth)) * props.widthScale
-    s.translate(originX + cellWidth / 2, originY + cellHeight / 2);
-    s.fill(props.foreground);
-
-    s.square(0, 0, squareWidth, props.corner);
-    s.pop();
-  }
-
-  //////////////////////////////////////////////////////////////////////////////////////////////////
   const setupProperties = () => {
     var Properties = function() {
       this.width = 480
       this.height = 360
   
       this.count = 10;
-      this.widthScale = 0.8
+      this.scaleWidth = 0.8
   
       this.marginX = 68
       this.marginY = 8
   
-      this.mutateWidth = 1
+      this.animatedScaleWidth = 1
       this.shiftX = 0
       this.shiftY = 0
   
@@ -95,9 +93,9 @@ let sketch = new p5(s => {
     gui.closed = false;
   
     gui.add(props, 'count', 1, 16).step(1);
-    gui.add(props, 'widthScale', 0.5, 1.5).step(0.05);
+    gui.add(props, 'scaleWidth', 0.5, 1.5).step(0.05);
   
-    gui.add(props, 'mutateWidth', -10, 10).step(0.5);
+    gui.add(props, 'animatedScaleWidth', -10, 10).step(0.5);
     gui.add(props, 'shiftX', -10, 10).step(1);
     gui.add(props, 'shiftY', -10, 10).step(1);
   
