@@ -1,12 +1,16 @@
 import dat from 'dat.gui'
 
+const PIXEL_DENSITY = 2
+
 class _Properties {
   constructor(extraProperties) {
 
     // Common properties
-    this.width = 640
+    this.width = 360
     this.height = 360
-    this.marginX = 148
+    this.pixelDensity = PIXEL_DENSITY
+
+    this.marginX = 8
     this.marginY = 8
 
     this.countX = 10
@@ -30,9 +34,9 @@ class _Properties {
     this.numberOfFrames = 120
     this.frameRate = 30
 
-    // this.width = 360
+    // this.width = 640
     // this.height = 360
-    // this.marginX = 8
+    // this.marginX = 148
     // this.marginY = 8    
 
     if (extraProperties) {
@@ -78,23 +82,41 @@ class _Properties {
     gui.add(this, 'cellVaryX', -10, 10).step(0.01)
     gui.add(this, 'cellVaryY', -10, 10).step(0.01)
 
-    gui.add(this, 'drawGrid')
-    gui.addColor(this, 'grid')
   
     gui.add(this, 'stroke')
-    gui.addColor(this, 'foreground')
-    gui.addColor(this, 'background')
   
     gui.add(this, 'animate')
     gui.add(this, 'frameNumber', 0, this.numberOfFrames).step(1)
-  
-  
 
-    let sampling = gui.addFolder('Recording')
-    sampling.add(this, 'numberOfFrames', 1, 180).step(1);
-    sampling.add(this, 'frameRate', 1, 60).step(1);
+    gui.addColor(this, 'foreground')
+    gui.addColor(this, 'background')
+    gui.addColor(this, 'grid')
+    gui.add(this, 'drawGrid')
+
+    let canvasSize = gui.addFolder('Size')
+    let widthController = canvasSize.add(this, 'width', 240, 1200).step(10)
+    let heightController = canvasSize.add(this, 'height', 240, 1200).step(10)
+    widthController.onFinishChange(this.onWidthHeightChange)
+    heightController.onFinishChange(this.onWidthHeightChange)
+
+    let sampling = gui.addFolder('Animation')
+    sampling.add(this, 'numberOfFrames', 1, 180).step(1)
+    sampling.add(this, 'frameRate', 1, 60).step(1)
 
     return gui
+  }
+
+  onWidthHeightChange() {
+    let canvas = document.querySelector('canvas')
+    if (this.property == 'width') {
+      let width = this.getValue()
+      canvas.width = width * PIXEL_DENSITY
+      canvas.style.width = width + 'px'
+    } else if (this.property == 'height') {
+      let height = this.getValue()
+      canvas.height = height * PIXEL_DENSITY
+      canvas.style.height = height + 'px'
+    }
   }
 }
 export { _Properties as Properties }

@@ -114,9 +114,9 @@ let _props = {}
     _canvas = document.querySelector('#' + _p5canvas.id())
     s.frameRate(_props.frameRate);
     
-    s.pixelDensity(2);
+    s.pixelDensity(_props.pixelDensity);
     s.smooth(8);
-    s.fill(32);
+    s.fill(_props.background);
     s.rectMode(s.CENTER);
     s.blendMode(s.ADD);
     s.noStroke();

@@ -4,6 +4,7 @@ import p5 from '../node_modules/p5/lib/p5.min.js' //import p5 from 'p5'
 import { Properties } from '../parts/props.js'
 import Capturer from '../parts/capturer.js'
 
+import { onePolyParallelogram } from '../parts/polys.js'
 import { squareGrid, squareGridLines } from '../parts/grids.js'
 
 
@@ -24,27 +25,33 @@ let sketch = new p5(s => {
     if (_props.animate) {
       _props.frameNumber += 1
     }
-    let t = s.map(_props.frameNumber, 0, _props.numberOfFrames, 0, 1)
   
     let patternWidth = (_props.width - 2 * _props.marginX)
     let patternHeight = (_props.height - 2 * _props.marginY)
-  
-    if (_props.animate) {
-      _props.shiftX =  _props.magX * s.sin(s.TWO_PI  * t)
-      //props.shiftY = 1 + cos(TWO_PI * 2 * t)
-      //props.shiftZ = 1 + sin(TWO_PI * 2 * t)
-      _shiftControllers.map(o => { o.updateDisplay() })
+
+    const transform = (context, cell, seq) => {
+      context.t = s.map(_props.frameNumber, 0, _props.numberOfFrames, 0, 1)
+      let timeShiftX = s.sin(s.TWO_PI * context.t)
+      let timeShiftY = s.sin(s.TWO_PI * context.t)
+      context.shiftX = context.cellVaryMag * seq.percentX * context.cellVaryX * timeShiftX
+      context.shiftY = context.cellVaryMag * seq.percentY * context.cellVaryY * timeShiftY
+
+      context.widthMultiplier = 2 + s.cos(s.TWO_PI * context.t)
+      return context
     }
 
     squareGrid(
       s, _props,
+
       _props.marginX, 
       _props.marginY,
       patternWidth,
       patternHeight,
       _props.countX,
       _props.countY,
-      drawOne
+
+      onePolyParallelogram,
+      transform
     )
   
     if (_props.drawGrid) {
@@ -61,44 +68,21 @@ let sketch = new p5(s => {
     s.endFrame();
   }
 
-  //////////////////////////////////////////////////////////////////////////////////////////////////
-  const drawOne = (s, cellContext, cell, seq) => {
-    s.push();
-    s.translate(cell.x, cell.y)
-    if (cellContext.stroke) {
-      s.strokeWeight(2)
-      s.stroke(cellContext.foreground)
-      s.noFill()
-    } else {
-      s.fill(cellContext.foreground)
-      s.noStroke()
-    }
-     if (cellContext.quad == 'mountain') {
-      let unitWidth = cell.w - 2 * cellContext.cellInset
-      s.quad(
-        cellContext.cellInset + unitWidth / 3  + seq.percentX * cellContext.shiftX, cellContext.cellInset,
-        cellContext.cellInset + unitWidth * 2 / 3  + seq.percentY * cellContext.shiftX, cellContext.cellInset,
-        cellContext.cellInset + unitWidth, cell.h - cellContext.cellInset  - seq.y * cellContext.shiftY,
-        0, cell.h - cellContext.cellInset - seq.y * cellContext.shiftY
-      )
-    }
-    s.pop();
-  }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
   const setupProperties = () => {
     _props = new Properties({
-      countX: 9,
-      countY: 9,
+      countX: 12,
+      countY: 12,
+      cellVaryX: 1,
+      cellVaryY: 3,
 
-      magX: 5,
+      cellVaryMag: 2,
       cellInset: 2,
-      quad: 'mountain'
     })
 
     let gui = _props.registerDat((props, gui) => {
-      gui.add(_props, 'magX', 0, 10).step(1)
-      gui.add(_props, 'quad', ['mountain'])
+      gui.add(_props, 'cellVaryMag', 0, 10).step(1)
       gui.add(_props, 'cellInset', 0, 10).step(1)
     })
     document.querySelector('#controls').appendChild(gui.domElement);
@@ -114,9 +98,9 @@ let sketch = new p5(s => {
     _canvas = document.querySelector('#' + _p5canvas.id())
     s.frameRate(_props.frameRate);
     
-    s.pixelDensity(2);
+    s.pixelDensity(_props.pixelDensity);
     s.smooth(8);
-    s.fill(32);
+    s.fill(_props.background);
     s.rectMode(s.CENTER);
     s.blendMode(s.ADD);
     s.noStroke();

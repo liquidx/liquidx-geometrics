@@ -11,11 +11,12 @@ const _onePolyCircle = (s, context, cell, seq, contextTransform) => {
   let widthScale = cellContext.scaleWidth || 1
   let heightScale = cellContext.scaleHeight || 1
 
-  s.push();
-    s.translate(cell.x + cell.w / 2, cell.y + cell.h / 2);
-    s.fill(cellContext.foreground);
-    s.ellipse(0, 0, cell.w * widthScale + widthTransform, cell.h * heightScale + heightTransform);
-  s.pop();
+  s.noStroke()
+  s.push()
+    s.translate(cell.x + cell.w / 2, cell.y + cell.h / 2)
+    s.fill(cellContext.foreground)
+    s.ellipse(0, 0, cell.w * widthScale + widthTransform, cell.h * heightScale + heightTransform)
+  s.pop()
 }
 
 const _onePolySquare = (s, context, cell, seq, contextTransform) => {
@@ -29,6 +30,7 @@ const _onePolySquare = (s, context, cell, seq, contextTransform) => {
     squareWidth = cellContext.cellWidth
   }
 
+  s.noStroke()
   s.push();
     s.translate(cell.x + cell.w / 2, cell.y + cell.h / 2);
     s.fill(cellContext.foreground);
@@ -107,6 +109,39 @@ const _onePolyTriangleEqualiteral = (s, context, cell, seq, contextTransform) =>
   s.pop()
 }
 
+const _onePolyParallelogram = (s, context, cell, seq, contextTransform) => {
+  let cellContext = context
+  if (contextTransform) {
+    cellContext = contextTransform(_.clone(cellContext), cell, seq)
+  }
+
+  let shiftX = cellContext.shiftX || 0
+  let shiftY = cellContext.shiftY || 0
+  let widthMultiplier = cellContext.widthMultiplier || 1
+
+  s.push();
+  s.translate(cell.x, cell.y)
+  if (cellContext.stroke) {
+    s.strokeWeight(2)
+    s.stroke(cellContext.foreground)
+    s.noFill()
+  } else {
+    s.fill(cellContext.foreground)
+    s.noStroke()
+  }
+
+  let drawableWidth = cell.w - 2 * cellContext.cellInset
+  let drawableHeight = cell.h - 2 * cellContext.cellInset
+  let paraWidth = (drawableWidth / 3) * widthMultiplier
+
+  s.quad(
+    cellContext.cellInset + shiftY + shiftX, cellContext.cellInset,
+    cellContext.cellInset + paraWidth + shiftY + shiftX, cellContext.cellInset,
+    cell.w - cellContext.cellInset - shiftY - shiftX, cellContext.cellInset + drawableHeight,
+    cell.w - cellContext.cellInset - paraWidth - shiftY - shiftX, cellContext.cellInset + drawableHeight)
+  s.pop();
+}
+
 const _onePolyConcentricCircle = (s, context, cell, seq, contextTransform) => {
   let cellContext = context
   if (contextTransform) {
@@ -149,4 +184,5 @@ export { _onePolyCircle as onePolyCircle }
 export { _onePolySquare as onePolySquare }
 export { _onePolyTriangleSimple as onePolyTriangleSimple }
 export { _onePolyTriangleEqualiteral as onePolyTriangleEqualiteral }
+export { _onePolyParallelogram as onePolyParallelogram }
 export { _onePolyConcentricCircle as onePolyConcentricCircle }
