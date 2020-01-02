@@ -72,7 +72,7 @@ let sketch = new p5(s => {
     })
 
     let gui = _props.registerDat((props, gui) => {
-      gui.add(_props, 'count', 1, 16).step(1);
+      gui.add(_props, 'count', 1, 32).step(1);
       gui.add(_props, 'scaleWidth', 0.5, 1.5).step(0.05);    
       gui.add(_props, 'animatedScaleWidth', -10, 10).step(0.5);
       gui.add(_props, 'corner', 0, 10).step(0.5);
