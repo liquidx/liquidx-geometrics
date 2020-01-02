@@ -6,8 +6,8 @@ import Capturer from '../parts/capturer.js'
 
 
 // The canvas.
-let p5canvas = null
-let canvas = null
+let _p5canvas = null
+let _canvas = null
 let _capturer = null
 
 // Animation
@@ -162,9 +162,9 @@ let sketch = new p5(s => {
   s.setup = () => {
     setupProperties()
 
-    p5canvas = s.createCanvas(_props.width, _props.height);
-    p5canvas.parent("container");
-    canvas = document.querySelector('#' + p5canvas.id())
+    _p5canvas = s.createCanvas(_props.width, _props.height);
+    _p5canvas.parent("container");
+    _canvas = document.querySelector('#' + _p5canvas.id())
     s.frameRate(_props.frameRate);
     
     s.pixelDensity(2);
@@ -174,7 +174,7 @@ let sketch = new p5(s => {
     s.blendMode(s.ADD);
     s.noStroke();
 
-    _capturer = new Capturer(canvas, canvas.width, canvas.height, _props.frameRate, _props.numberOfFrames, 'animation')
+    _capturer = new Capturer(_canvas, _canvas.width, _canvas.height, _props.frameRate, _props.numberOfFrames, 'animation')
 
     document.querySelector('#capture').addEventListener('click', e => {
       _props.frameNumber = 0
