@@ -7,6 +7,7 @@ class Capturer {
     this.frameRate = frameRate
     this.frameCount = frameCount
     this.captureName = name
+    this.recordedBlobs = []
 
     this.mimeType = 'video/webm'  // only works on chrome.
     this.bitsPerSecond = 10 * 1000 * 1000
@@ -27,7 +28,7 @@ class Capturer {
         this.stream, 
         {mimeType: this.mimeType, videoBitsPerSecond: this.bitsPerSecond})
       this.mediaRecorder.onstop = this.onStop.bind(this)
-      this.mediaRecorder.ondataavailable = this.onDataAvailable
+      this.mediaRecorder.ondataavailable = this.onDataAvailable.bind(this)
       this.mediaRecorder.start()
       // Hack to pass only the filename in to the onStop function.
       this.mediaRecorder.fileName = this.captureName + '.webm'
@@ -36,22 +37,20 @@ class Capturer {
   }
 
   onStop() {
-    const blob = new Blob(window.recordedBlobs, {type: 'video/webm'});
+    const blob = new Blob(this.recordedBlobs, {type: 'video/webm'});
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.style.display = 'none';
     a.href = url;
-    a.download = this.captureName
+    a.download = this.captureName + '.webm'
     document.body.appendChild(a)
     a.click();
     window.URL.revokeObjectURL(url)
-    this.started = false
-    this.stream = null
   }
 
   onDataAvailable(event) {
     if (event.data && event.data.size > 0) {
-      window.recordedBlobs.push(event.data);
+      this.recordedBlobs.push(event.data);
     }
   }
 
