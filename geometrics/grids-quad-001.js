@@ -15,7 +15,6 @@ let _capturer = null
 
 // Animation
 let _props = {}
-let _shiftControllers = []
 
 // eslint-disable-next-line no-unused-vars
 let sketch = new p5(s => {
