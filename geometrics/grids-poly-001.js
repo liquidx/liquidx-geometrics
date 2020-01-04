@@ -98,8 +98,8 @@ let _props = {}
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
-  const setupProperties = () => {
-    _props = new Properties()
+  const setupProperties = (s) => {
+    _props = new Properties(s)
     let gui = _props.registerDat()
     document.querySelector('#controls').appendChild(gui.domElement);
   }
@@ -107,7 +107,7 @@ let _props = {}
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
   s.setup = () => {
-    setupProperties()
+    setupProperties(s)
 
     _p5canvas = s.createCanvas(_props.width, _props.height);
     _p5canvas.parent("container");

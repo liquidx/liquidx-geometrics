@@ -60,8 +60,8 @@ let _shiftControllers = []
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
-  const setupProperties = () => {
-    _props = new Properties({
+  const setupProperties = (s) => {
+    _props = new Properties(s, {
       cellVaryX: 0.1,
       cellVaryY: 0.2
     }) 
@@ -73,7 +73,7 @@ let _shiftControllers = []
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
   s.setup = () => {
-    setupProperties()
+    setupProperties(s)
 
     _p5canvas = s.createCanvas(_props.width, _props.height);
     _p5canvas.parent("container");

@@ -62,8 +62,8 @@ let sketch = new p5(s => {
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
-  const setupProperties = () => {
-    _props = new Properties({
+  const setupProperties = (s) => {
+    _props = new Properties(s, {
       triangleType: 'tl-tr-bl',
       cellVaryZ: 0
     })
@@ -78,7 +78,7 @@ let sketch = new p5(s => {
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
   s.setup = () => {
-    setupProperties()
+    setupProperties(s)
 
     _p5canvas = s.createCanvas(_props.width, _props.height);
     _p5canvas.parent("container");

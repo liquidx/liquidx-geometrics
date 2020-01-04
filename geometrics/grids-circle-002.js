@@ -61,8 +61,8 @@ let sketch = new p5(s => {
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
-  const setupProperties = () => {
-    _props = new Properties({
+  const setupProperties = (s) => {
+    _props = new Properties(s, {
       countX: 2,
       countY: 2,
       animate: false,
@@ -86,7 +86,7 @@ let sketch = new p5(s => {
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
   s.setup = () => {
-    setupProperties()
+    setupProperties(s)
 
     _p5canvas = s.createCanvas(_props.width, _props.height);
     _p5canvas.parent("container");

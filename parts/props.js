@@ -4,7 +4,7 @@ import _ from 'lodash'
 const PIXEL_DENSITY = 2
 
 class _Properties {
-  constructor(extraProperties) {
+  constructor(sketch, extraProperties) {
 
     // Common properties
     this.width = 360
@@ -46,6 +46,7 @@ class _Properties {
       }
     }
 
+    this._sketch = sketch
     this._defaults = {}
     for (let k of _.keys(this)) {
       if (k.startsWith('_')) { continue }
@@ -145,30 +146,26 @@ class _Properties {
     gui.addColor(this, 'grid')
     gui.add(this, 'drawGrid')
 
+    const onWidthHeightChange = () => {
+      let canvas = document.querySelector('#defaultCanvas0')
+      this._sketch.resizeCanvas(this.width, this.height)
+      canvas.width = this.width * PIXEL_DENSITY
+      canvas.height = this.height * PIXEL_DENSITY
+      canvas.style.width = this.width + 'px'
+      canvas.style.height = this.height  + 'px'
+    }
+
     let canvasSize = gui.addFolder('Size')
     let widthController = canvasSize.add(this, 'width', 240, 1200).step(10)
     let heightController = canvasSize.add(this, 'height', 240, 1200).step(10)
-    widthController.onFinishChange(this.onWidthHeightChange)
-    heightController.onFinishChange(this.onWidthHeightChange)
+    widthController.onFinishChange(onWidthHeightChange)
+    heightController.onFinishChange(onWidthHeightChange)
 
     let sampling = gui.addFolder('Animation')
     sampling.add(this, 'numberOfFrames', 1, 180).step(1)
     sampling.add(this, 'frameRate', 1, 60).step(1)
 
     return gui
-  }
-
-  onWidthHeightChange() {
-    let canvas = document.querySelector('canvas')
-    if (this.property == 'width') {
-      let width = this.getValue()
-      canvas.width = width * PIXEL_DENSITY
-      canvas.style.width = width + 'px'
-    } else if (this.property == 'height') {
-      let height = this.getValue()
-      canvas.height = height * PIXEL_DENSITY
-      canvas.style.height = height + 'px'
-    }
   }
 }
 export { _Properties as Properties }
