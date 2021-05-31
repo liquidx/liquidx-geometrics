@@ -2,9 +2,6 @@
   "name": "liquidx-geometrics",
   "version": "1.0.0",
   "main": "server.js",
-  "engines": {
-    "node": "10.x"
-  },
   "scripts": {
     "build": "npx webpack --config webpack.dev.js",
     "build-prod": "npx webpack --config webpack.prod.js",
@@ -38,8 +35,8 @@
     "file-loader": "^5.0.2",
     "html-webpack-plugin": "^3.2.0",
     "mini-css-extract-plugin": "^0.9.0",
-    "node-sass": "^4.13.0",
     "postcss-loader": "^3.0.0",
+    "sass": "^1.34.0",
     "sass-loader": "^8.0.0",
     "style-loader": "^1.1.2",
     "terser-webpack-plugin": "^2.3.1",

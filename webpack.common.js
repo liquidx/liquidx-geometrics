@@ -95,7 +95,7 @@ module.exports = {
           { loader: 'postcss-loader'},
           {
             loader: 'sass-loader',
-            options: {implementation: require('node-sass')}
+            options: {implementation: require('sass')}
           }
         ]
       }
