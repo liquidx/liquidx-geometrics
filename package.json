@@ -8,15 +8,10 @@
   },
   "dependencies": {
     "@babel/core": "^7.7.7",
-    "@google-cloud/storage": "^4.2.0",
     "dat.gui": "^0.7.6",
-    "express": "^4.17.1",
-    "express-handlebars": "^3.1.0",
-    "firebase": "^7.6.1",
     "handlebars": "^4.5.3",
-    "liquidx-base": "file:../liquidx-base",
+    "liquidx-base": "git://github.com/liquidx/liquidx-base.git",
     "lodash": "^4.17.11",
-    "normalize.css": "^8.0.1",
     "p5": "^0.10.2"
   },
   "devDependencies": {
@@ -30,7 +25,6 @@
     "html-webpack-plugin": "^5.3.1",
     "http-server": "^0.12.3",
     "mini-css-extract-plugin": "^1.6.0",
-    "postcss-loader": "^3.0.0",
     "sass": "^1.34.1",
     "sass-loader": "^12.1.0",
     "style-loader": "^1.1.2",
