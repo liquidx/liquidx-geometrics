@@ -13,7 +13,7 @@ and as I figure out the best way for me to iterate, I'll continue to mess around
 I export to webm using Chrome and then convert to mp4 using ffmpeg. The command is 
 
 ```
-fmpeg -i animation.webm -crf 10 grids-20190102.mp4
+ffmpeg -i animation.webm -crf 10 grids-20190102.mp4
 ```
 
 ## Prior History

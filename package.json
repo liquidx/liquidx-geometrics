@@ -1,7 +1,6 @@
 {
   "name": "liquidx-geometrics",
-  "version": "1.0.0",
-  "main": "server.js",
+  "version": "1.0.20210612",
   "scripts": {
     "build": "npx webpack --config webpack.js",
     "watch": "npx webpack --info-verbosity none --watch --config webpack.js",
