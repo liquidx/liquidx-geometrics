@@ -6,7 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const project = require('./webpack.embed.js')
 
 module.exports = merge.merge(
-  project.webpackConfig('./src', './src/index.hbs', 'index.html', './'),
+  project.webpackConfig('./src', './src/index.hbs', 'index.html', './src/piece.hbs', './'),
   {
     mode: 'development',
     devtool: 'inline-source-map',

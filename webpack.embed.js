@@ -10,7 +10,7 @@ const jsTargets = (piecesPath) => {
 }
 
 
-const webpackConfig = (srcPath, templatePath, htmlOutputPath, piecesOutputDir) => {
+const webpackConfig = (srcPath, templatePath, htmlOutputPath, pieceTemplatePath, piecesOutputDir) => {
   const chunkName = 'geometrics-index'
 
   const entry = {}
@@ -21,7 +21,6 @@ const webpackConfig = (srcPath, templatePath, htmlOutputPath, piecesOutputDir) =
     ],
   }
 
-
   const plugins = [
     new HtmlWebpackPlugin({
       filename: htmlOutputPath || 'index.html',
@@ -30,7 +29,6 @@ const webpackConfig = (srcPath, templatePath, htmlOutputPath, piecesOutputDir) =
     }),
   ]
 
-
   // Append each prototype.
   const piecesPath = path.join(__dirname, 'src', 'pieces')
   for (let target of jsTargets(piecesPath)) {
@@ -38,7 +36,7 @@ const webpackConfig = (srcPath, templatePath, htmlOutputPath, piecesOutputDir) =
 
     plugins.push(new HtmlWebpackPlugin({
       filename: path.join(piecesOutputDir, `${target}`, 'index.html'),
-      template: path.join(srcPath, 'piece.hbs'),
+      template: pieceTemplatePath,
       templateParameters: {
         name: target
       },
