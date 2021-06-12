@@ -1,8 +1,10 @@
-import p5 from '../node_modules/p5/lib/p5.min.js' //import p5 from 'p5'
+import p5 from 'p5'
 import Capturer from '../parts/capturer.js'
-import { squareGrid, squareGridLines } from '../parts/grids.js'
-import { onePolyTriangleEqualiteral } from '../parts/polys.js'
 import { Properties } from '../parts/props.js'
+
+import { squareGrid, squareGridLines } from '../parts/grids.js'
+import { onePolyCircle } from '../parts/polys.js'
+
 
 // The canvas.
 let _p5canvas = null
@@ -10,24 +12,24 @@ let _canvas = null
 let _capturer = null
 
 // Animation
-let _props = null
-let _gui = null
-let _shiftControllers = []
+let _props = {}
 
-  // eslint-disable-next-line no-unused-vars
-  let sketch = new p5(s => {
+// eslint-disable-next-line no-unused-vars
+let sketch = new p5(s => {
 
   s.draw = () => {
     s.startFrame()
+
     if (_props.animate) {
       _props.frameNumber += 1
     }
-
+  
     let patternWidth = (_props.width - 2 * _props.marginX)
     let patternHeight = (_props.height - 2 * _props.marginY)
 
     const transform = (context, cell, seq) => {
-      context.t = s.map(context.frameNumber, 0, context.numberOfFrames, 0, 1)
+      context.cellWidthTransform = seq.x * context.cellVaryX
+      context.cellHeightTransform = seq.y * context.cellVaryY
       return context
     }
 
@@ -41,12 +43,13 @@ let _shiftControllers = []
       _props.countX,
       _props.countY,
 
-      onePolyTriangleEqualiteral,
+      onePolyCircle,
       transform
     )
   
     if (_props.drawGrid) {
-      squareGridLines(s, {},
+      squareGridLines(
+        s, _props,
         _props.marginX, 
         _props.marginY,
         patternWidth,
@@ -62,19 +65,23 @@ let _shiftControllers = []
   //////////////////////////////////////////////////////////////////////////////////////////////////
   const setupProperties = (s) => {
     _props = new Properties(s, {
-      cellVaryX: 0.1,
-      cellVaryY: 0.2
-    }) 
+      cellVaryX: -3,
+      cellVaryY: -3,
+
+      scaleWidth: 0.8,
+      scaleHeight: 0.8,
+    })
     let gui = _props.registerDat((props, gui) => {
+      gui.add(props, 'scaleWidth', 0.5, 1.5).step(0.1);
+      gui.add(props, 'scaleHeight', 0.5, 1.5).step(0.1);
     })
     document.querySelector('#controls').appendChild(gui.domElement);
   }
-
+  
   //////////////////////////////////////////////////////////////////////////////////////////////////
 
   s.setup = () => {
     setupProperties(s)
-
     _p5canvas = s.createCanvas(_props.width, _props.height);
     _p5canvas.parent("container");
     _canvas = document.querySelector('#' + _p5canvas.id())
@@ -105,3 +112,6 @@ let _shiftControllers = []
     _capturer.captureFrame()
   }
 })
+
+
+

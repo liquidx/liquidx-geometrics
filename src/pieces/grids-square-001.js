@@ -1,10 +1,10 @@
-import p5 from '../node_modules/p5/lib/p5.min.js' //import p5 from 'p5'
-import _ from 'lodash'
-import Capturer from '../parts/capturer.js'
+import p5 from 'p5'
+
 import { Properties } from '../parts/props.js'
+import Capturer from '../parts/capturer.js'
 
 import { squareGrid, squareGridLines } from '../parts/grids.js'
-import { onePolyCircle, onePolyConcentricCircle } from '../parts/polys.js'
+import {onePolySquare } from '../parts/polys.js'
 
 // The canvas.
 let _p5canvas = null
@@ -14,8 +14,8 @@ let _capturer = null
 // Animation
 let _props = {}
 
-  // eslint-disable-next-line no-unused-vars
-  let sketch = new p5(s => {
+// eslint-disable-next-line no-unused-vars
+let sketch = new p5(s => {
 
   s.draw = () => {
     s.startFrame()
@@ -26,36 +26,36 @@ let _props = {}
     let patternWidth = (_props.width - 2 * _props.marginX)
     let patternHeight = (_props.height - 2 * _props.marginY)
 
-    const contextTransform = (context) => {
-      context.t = s.map(context.frameNumber, 0, context.numberOfFrames, 0, 1)
+    const transform = (context, cell, seq) => {
+      let t = s.map(context.frameNumber, 0, context.numberOfFrames, 0, 1)
+      let timeBasedWidthScale = context.animatedScaleWidth + s.sin(s.TWO_PI * t) * 0.5
+      context.cellWidth = (cell.w - ((seq.x + seq.y) * timeBasedWidthScale)) * context.scaleWidth
       return context
     }
 
     squareGrid(
-      // basic drawing
       s, _props,
 
-      // cell information
       _props.marginX, 
       _props.marginY,
       patternWidth,
       patternHeight,
-      _props.countX,
-      _props.countY,
+      _props.count,
+      _props.count,
 
-      // drawing methods
-      onePolyCircle,
-      contextTransform
+      onePolySquare,
+      transform
     )
   
     if (_props.drawGrid) {
-      squareGridLines(s, context,
+      squareGridLines(
+        s, _props,
         _props.marginX, 
         _props.marginY,
         patternWidth,
         patternHeight,
-        _props.countX,
-        _props.countY,
+        _props.count,
+        _props.count,
         _props.grid
       )
     }
@@ -63,44 +63,21 @@ let _props = {}
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////
-
-  // eslint-disable-next-line no-unused-vars
-  const drawOne = (s, context, originX, originY, cellWidth, cellHeight, seqX, seqY, percentX, percentY) => {
-    s.push()
-    s.translate(originX + cellWidth / 2, originY + cellHeight / 2)
-    s.rotate(s.TWO_PI * context.t)
-    s.rotate(s.TWO_PI * context.cellVaryX * percentX)
-    s.rotate(s.TWO_PI * context.cellVaryY * percentY)
-
-    if (_props.stroke) {
-      s.strokeWeight(2)
-      s.stroke(_props.foreground)
-      s.noFill()
-    } else {
-      s.fill(_props.foreground)
-      s.noStroke()
-    }
-
-    s.beginShape()
-    let radius = Math.min(cellWidth / 2, cellHeight / 2) - context.cellInset
-    let ax = 0
-    let ay = -radius
-    let bx = (ax * s.cos(s.TWO_PI / 3)) - (ay * s.sin(s.TWO_PI / 3))
-    let by = (ax * s.sin(s.TWO_PI / 3)) + (ay * s.cos(s.TWO_PI / 3))
-    let cx = (ax * s.cos(s.TWO_PI * 2 / 3)) - (ay * s.sin(s.TWO_PI * 2 / 3))
-    let cy = (ax * s.sin(s.TWO_PI * 2 / 3)) + (ay * s.cos(s.TWO_PI * 2 / 3))
-    s.vertex(ax, ay)
-    s.vertex(bx, by)
-    s.vertex(cx, cy)
-    s.endShape(s.CLOSE)
-    
-    s.pop()
-  }
-
-  //////////////////////////////////////////////////////////////////////////////////////////////////
   const setupProperties = (s) => {
-    _props = new Properties(s)
-    let gui = _props.registerDat()
+    _props = new Properties(s, {
+      count: 10,
+      animatedScaleWidth: 1,
+      scaleWidth: 0.8,
+      corner: 4
+    })
+
+    let gui = _props.registerDat((props, gui) => {
+      gui.add(_props, 'count', 1, 32).step(1);
+      gui.add(_props, 'scaleWidth', 0.5, 1.5).step(0.05);    
+      gui.add(_props, 'animatedScaleWidth', -10, 10).step(0.5);
+      gui.add(_props, 'corner', 0, 10).step(0.5);
+
+    })
     document.querySelector('#controls').appendChild(gui.domElement);
   }
 
