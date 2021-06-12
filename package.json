@@ -7,12 +7,6 @@
     "build-prod": "npx webpack --config webpack.prod.js",
     "watch": "npx webpack --info-verbosity none --watch --config webpack.dev.js",
     "start": "npx webpack --config webpack.dev.js && node server.js",
-    "start-webpack": "webpack-dev-server --config webpack.dev.js --open",
-    "deploy-gcloud": "npx webpack --config webpack.prod.js && gcloud app deploy --promote -q --project liquidx-geometrics",
-    "deploy-firebase": "npx webpack --config webpack.prod.js &&  firebase deploy",
-    "deploy-now": "now",
-    "logs-gcloud": "gcloud app logs tail -s default --project liquidx-geometrics",
-    "deploy-gcs": "gsutil -m cp -r data-images gs://liquidx-geometrics.a.appspot.com/"
   },
   "dependencies": {
     "@babel/core": "^7.7.7",
