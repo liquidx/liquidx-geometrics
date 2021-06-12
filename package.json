@@ -14,7 +14,7 @@
     "express": "^4.17.1",
     "express-handlebars": "^3.1.0",
     "firebase": "^7.6.1",
-    "handlebars": "^4.5.3",
+    "handlebars": "^4.7.7",
     "liquidx-base": "file:../liquidx-base",
     "lodash": "^4.17.11",
     "normalize.css": "^8.0.1",
