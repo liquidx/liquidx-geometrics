@@ -1,4 +1,4 @@
-<script>
+<script lang="js">
   import { onMount } from "svelte";
   import { createEventDispatcher } from "svelte";
 
