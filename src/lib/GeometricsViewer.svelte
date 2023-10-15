@@ -10,12 +10,14 @@
   onMount(async () => {
     let props = {};
     console.log(piece);
-    let base = piece.base || piece.id;
     if (piece.params) {
       props = piece.params;
     }
-    const viewer = (await import(`./pieces/${base}.js`)).default;
-    viewer(parentEl, props);
+    const p5_module = await import("p5");
+    const p5 = p5_module.default;
+    new p5((s) => {
+      piece.build(s, parentEl, props);
+    });
   });
 </script>
 
