@@ -2,7 +2,7 @@ import Capturer from "../parts/capturer.js";
 import { squareGrid, squareGridLines } from "../parts/grids.js";
 import { onePolyTriangleEqualiteral } from "../parts/polys.js";
 import { Properties } from "../parts/props.js";
-import { initial } from "lodash";
+import { initial } from "lodash-es";
 
 const sketch = (s, parentEl, initialProps) => {
   let _canvas = null;
@@ -36,7 +36,7 @@ const sketch = (s, parentEl, initialProps) => {
       props.countY,
 
       onePolyTriangleEqualiteral,
-      transform
+      transform,
     );
 
     if (props.drawGrid) {
@@ -49,7 +49,7 @@ const sketch = (s, parentEl, initialProps) => {
         patternHeight,
         props.countX,
         props.countY,
-        props.grid
+        props.grid,
       );
     }
     s.endFrame();
@@ -88,7 +88,7 @@ const sketch = (s, parentEl, initialProps) => {
       _canvas.height,
       props.frameRate,
       props.numberOfFrames,
-      "animation"
+      "animation",
     );
     _capturer.activateLink(document.querySelector("#capture"), () => {
       props.frameNumber = 0;

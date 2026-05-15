@@ -1,4 +1,4 @@
-import _ from "lodash";
+import { keys } from "lodash-es";
 
 const PIXEL_DENSITY = 2;
 
@@ -46,7 +46,7 @@ class _Properties {
 
     this._sketch = sketch;
     this._defaults = {};
-    for (let k of _.keys(this)) {
+    for (let k of keys(this)) {
       if (k.startsWith("_")) {
         continue;
       }
@@ -81,7 +81,7 @@ class _Properties {
 
   saveToHash() {
     let changes = {};
-    for (let k of _.keys(this)) {
+    for (let k of keys(this)) {
       if (k.startsWith("_")) {
         continue;
       }
@@ -91,7 +91,7 @@ class _Properties {
       }
     }
 
-    if (_.keys(changes).length > 0) {
+    if (keys(changes).length > 0) {
       let params = new URLSearchParams(changes);
       window.location.hash = "#" + params.toString();
     }

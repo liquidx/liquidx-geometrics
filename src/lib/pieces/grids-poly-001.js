@@ -1,4 +1,4 @@
-import _ from "lodash";
+import { keys } from "lodash-es";
 import Capturer from "../parts/capturer.js";
 import { Properties } from "../parts/props.js";
 
@@ -40,7 +40,7 @@ const sketch = (s, parentEl, initialProps) => {
 
       // drawing methods
       onePolyCircle,
-      contextTransform
+      contextTransform,
     );
 
     if (props.drawGrid) {
@@ -53,7 +53,7 @@ const sketch = (s, parentEl, initialProps) => {
         patternHeight,
         props.countX,
         props.countY,
-        props.grid
+        props.grid,
       );
     }
     s.endFrame();
@@ -72,7 +72,7 @@ const sketch = (s, parentEl, initialProps) => {
     seqX,
     seqY,
     percentX,
-    percentY
+    percentY,
   ) => {
     s.push();
     s.translate(originX + cellWidth / 2, originY + cellHeight / 2);
@@ -135,7 +135,7 @@ const sketch = (s, parentEl, initialProps) => {
       _canvas.height,
       props.frameRate,
       props.numberOfFrames,
-      "animation"
+      "animation",
     );
     _capturer.activateLink(document.querySelector("#capture"), () => {
       props.frameNumber = 0;
