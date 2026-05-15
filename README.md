@@ -10,7 +10,7 @@ and as I figure out the best way for me to iterate, I'll continue to mess around
 
 ## ffmpeg
 
-I export to webm using Chrome and then convert to mp4 using ffmpeg. The command is 
+I export to webm using Chrome and then convert to mp4 using ffmpeg. The command is
 
 ```
 ffmpeg -i animation.webm -crf 10 grids-20190102.mp4
@@ -18,8 +18,11 @@ ffmpeg -i animation.webm -crf 10 grids-20190102.mp4
 
 ## Prior History
 
-This used to be called [liqudx-genart](https://liquidx-genart.glitch.me/), 
+This used to be called [liqudx-genart](https://liquidx-genart.glitch.me/),
 but I wanted a new start to get into a better pace.
 
 You can still check out to the old work on [Glitch](https://glitch.com/edit/#!/liquidx-genart).
 
+## Distribution
+
+Published as an local GitHub npm via `pnpm run release`
